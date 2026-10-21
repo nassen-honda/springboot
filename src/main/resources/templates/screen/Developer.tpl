@@ -7,13 +7,19 @@
     <title th:text="'開発メニュー'">開発メニュー</title>
 </head>
 <body>
-<main class="min-w-0 flex-1 overflow-auto p-6">
-    <h1 class="mx-auto mb-6 max-w-[1600px] text-2xl font-bold tracking-tight text-slate-900" th:text="'開発メニュー'">開発メニュー</h1>
+<main class="min-w-0 flex-1 overflow-auto p-4 sm:p-6">
+    <div class="mx-auto mb-6 max-w-[1600px]">
+        <div th:replace="~{parts/ui :: pageHeader('開発メニュー', '開発・動作確認用の操作を行います。')}"></div>
+    </div>
     <form class="mx-auto max-w-[1600px]" th:action="@{/Developer}" th:object="${form}" method="post" data-enter-key="true">
 
         <!--/* 画面項目（画面定義の「画面」タブの順・入れ子） */-->
         <div data-node="n:TableMain" class="space-y-6">
-            <div class="grid grid-cols-1 gap-4">
+            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="mb-4">
+                    <h2 class="text-base font-semibold text-slate-900">登録操作</h2>
+                    <p class="mt-1 text-sm text-slate-500">テストデータの登録を行います。</p>
+                </div>
                 <details data-node="n:messageView" class="message-view relative mb-4 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm" th:classappend="${messages.empty} ? 'hidden'" data-levels="Error,Warning,Info" data-clear-on-event="true" th:open="${messages.hasError}">
                     <summary class="message-summary cursor-pointer list-none select-none text-sm font-semibold text-slate-600 [&::-webkit-details-marker]:hidden" th:text="${messages.summary}">メッセージ</summary>
                     <ul class="message-list mt-2 space-y-1">
@@ -23,12 +29,12 @@
                     </ul>
                     <button type="button" class="message-close absolute right-3 top-2.5 text-slate-400 transition hover:text-slate-600" title="閉じる">×</button>
                 </details>
-            </div>
-        </div>
 
-        <!--/* 部品: 操作ボタン */-->
-        <div class="mt-6 flex items-center gap-3">
-            <button type="submit" class="inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1">登録</button>
+                <!--/* 部品: 操作ボタン */-->
+                <div class="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-5">
+                    <button type="submit" class="inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1">登録</button>
+                </div>
+            </div>
         </div>
     </form>
 
@@ -264,7 +270,7 @@
             input.addEventListener('mousemove', e => input.style.cursor = onIcon(e) && !button.disabled ? 'pointer' : '');
             input.addEventListener('click', e => { if (onIcon(e) && !button.disabled) button.click(); });
           });
-          // 一覧（Tailwind の table.data）：縞模様（表示中の行に 1 行おきに alt）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
+          // 一覧（Tailwind の table.data）：縞模様（表示中の行に 1 行おきに bg-slate-50）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
           // 並べ替え（th.sortable。sort-asc / sort-desc）、列の幅の変更（.col-resizer）、表示中の行をまとめて選ぶ（data-check-all）
           root.querySelectorAll('table[data-grid]').forEach(table => {
             const body = table.tBodies[0];
@@ -293,7 +299,7 @@
             };
             const show = () => {
               const all = rows();
-              // 最初のページ以外の行（サーバーで隠した行 pg-off）は、ここで表示・非表示を決める
+              // 最初のページ以外の行（サーバーで隠した行 hidden）は、ここで表示・非表示を決める
               all.forEach(r => r.classList.remove('hidden'));
               // SEQ（td.seq）：並べ替えた後も上から 1, 2, …（data-row の行番号は変えない）
               all.forEach((r, i) => { const seq = r.querySelector('td.seq'); if (seq) seq.textContent = i + 1; });

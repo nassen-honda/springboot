@@ -7,70 +7,36 @@
     <title th:text="'取引先マスタ一覧'">取引先マスタ一覧</title>
 </head>
 <body>
-<main class="min-w-0 flex-1 overflow-auto p-6">
-    <h1 class="mx-auto mb-6 max-w-[1600px] text-2xl font-bold tracking-tight text-slate-900" th:text="'取引先マスタ一覧'">取引先マスタ一覧</h1>
+<main class="min-w-0 flex-1 overflow-auto p-4 sm:p-6">
+    <div class="mx-auto mb-6 flex max-w-[1600px] flex-wrap items-end justify-between gap-4">
+        <div th:replace="~{parts/ui :: pageHeader('取引先マスタ一覧', '取引先の検索・登録・編集を行います。')}"></div>
+        <div class="flex flex-wrap items-center gap-2">
+            <button type="button" data-item="btnNew1" data-node="n:btnNew1"
+                    class="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                新規作成
+            </button>
+            <button type="button" data-item="btnExport1" data-node="n:btnExport1"
+                    class="inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-1">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></svg>
+                CSV 出力
+            </button>
+        </div>
+    </div>
     <form class="mx-auto max-w-[1600px]" th:action="@{/CustomerMasterList}" th:object="${form}" method="post">
 
         <!--/* 画面項目（画面定義の「画面」タブの順・入れ子） */-->
         <div data-node="n:TableMain" class="space-y-6">
             <div data-node="n:panel1" class="grid grid-cols-1 gap-x-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm xl:grid-cols-2">
-                <div data-node="v:CustomerCD" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
-                    <div class="contents">
-                        <div class="flex min-h-9 items-center justify-end gap-1">
-                            <label class="text-sm font-medium text-slate-700" for="CustomerCD">取引先コード</label>
-                        </div>
-                        <div class="flex min-w-0 max-w-sm items-center gap-2">
-                            <input type="text" id="CustomerCD" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400" th:field="*{CustomerCD}" autocomplete="off" maxlength="10"/>
-                        </div>
-                    </div>
-                    <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('CustomerCD')}" th:errors="*{CustomerCD}"></span>
+                <div class="mb-1 flex items-center justify-between xl:col-span-2">
+                    <h2 class="text-sm font-semibold text-slate-700">検索条件</h2>
                 </div>
-                <div data-node="v:CustomerNM" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
-                    <div class="contents">
-                        <div class="flex min-h-9 items-center justify-end gap-1">
-                            <label class="text-sm font-medium text-slate-700" for="CustomerNM">取引先名</label>
-                        </div>
-                        <div class="flex min-w-0 max-w-sm items-center gap-2">
-                            <input type="text" id="CustomerNM" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400" th:field="*{CustomerNM}" autocomplete="off" maxlength="100"/>
-                        </div>
-                    </div>
-                    <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('CustomerNM')}" th:errors="*{CustomerNM}"></span>
-                </div>
-                <div data-node="v:CustomerOmission" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
-                    <div class="contents">
-                        <div class="flex min-h-9 items-center justify-end gap-1">
-                            <label class="text-sm font-medium text-slate-700" for="CustomerOmission">取引先略称</label>
-                        </div>
-                        <div class="flex min-w-0 max-w-sm items-center gap-2">
-                            <input type="text" id="CustomerOmission" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400" th:field="*{CustomerOmission}" autocomplete="off" maxlength="100"/>
-                        </div>
-                    </div>
-                    <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('CustomerOmission')}" th:errors="*{CustomerOmission}"></span>
-                </div>
+                <div th:replace="~{parts/ui :: fieldText('v:CustomerCD', '取引先コード', 'CustomerCD', null, 10, null, null)}"></div>
+                <div th:replace="~{parts/ui :: fieldText('v:CustomerNM', '取引先名', 'CustomerNM', null, 100, null, null)}"></div>
+                <div th:replace="~{parts/ui :: fieldText('v:CustomerOmission', '取引先略称', 'CustomerOmission', null, 100, null, null)}"></div>
                 <div data-node="n:table1" class="mt-2 grid grid-cols-1 gap-x-8 xl:col-span-2 xl:grid-cols-2">
-                    <div data-node="v:UserCD" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
-                        <div class="contents">
-                            <div class="flex min-h-9 items-center justify-end gap-1">
-                                <label class="text-sm font-medium text-slate-700" for="UserCD">ユーザコード</label>
-                            </div>
-                            <div class="flex min-w-0 max-w-sm items-center gap-2">
-                                <input type="text" id="UserCD" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400 !pr-10 bg-[length:1rem_1rem] bg-[right_0.75rem_center] bg-no-repeat bg-[url('/img/icon-search.svg')] ico-search" th:field="*{UserCD}" autocomplete="off" maxlength="10"/>
-                                <button type="submit" name="_event" value="UserCD_Popup" class="btn-popup" formnovalidate="formnovalidate" title="ユーザ選択画面" style="display: none">🔍</button>
-                            </div>
-                        </div>
-                        <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('UserCD')}" th:errors="*{UserCD}"></span>
-                    </div>
-                    <div data-node="v:UserName" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
-                        <div class="contents">
-                            <div class="flex min-h-9 items-center justify-end gap-1">
-                                <label class="text-sm font-medium text-slate-700" for="UserName">ユーザ名</label>
-                            </div>
-                            <div class="flex min-w-0 max-w-sm items-center gap-2">
-                                <input type="text" id="UserName" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400" th:field="*{UserName}" autocomplete="off" maxlength="50"/>
-                            </div>
-                        </div>
-                        <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('UserName')}" th:errors="*{UserName}"></span>
-                    </div>
+                    <div th:replace="~{parts/ui :: fieldText('v:UserCD', 'ユーザコード', 'UserCD', null, 10, null, null)}"></div>
+                    <div th:replace="~{parts/ui :: fieldText('v:UserName', 'ユーザ名', 'UserName', null, 50, null, null)}"></div>
                     <div data-node="v:CreateDate" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
                         <div class="contents">
                             <div class="flex min-h-9 items-center justify-end gap-1">
@@ -85,26 +51,11 @@
                         </div>
                         <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('CreateDate')}" th:errors="*{CreateDate}"></span>
                     </div>
-                    <div data-node="v:CustomerKbn" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
-                        <div class="contents">
-                            <div class="flex min-h-9 items-center justify-end gap-1">
-                                <label class="text-sm font-medium text-slate-700" for="CustomerKbn">取引先区分</label>
-                            </div>
-                            <div class="flex min-w-0 max-w-sm items-center gap-2">
-                                <select id="CustomerKbn" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400 pr-8" th:field="*{CustomerKbn}">
-                                    <option value=""></option>
-                                    <option th:each="item : ${CustomerKbnItems}" th:value="${item.key}" th:text="${item.value}">項目</option>
-                                </select>
-                            </div>
-                        </div>
-                        <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('CustomerKbn')}" th:errors="*{CustomerKbn}"></span>
-                    </div>
+                    <div th:replace="~{parts/ui :: fieldSelect('v:CustomerKbn', '取引先区分', 'CustomerKbn', ${CustomerKbnItems}, null, true, null)}"></div>
                 </div>
                 <div data-node="n:buttonGroup2" class="mt-2 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-5 xl:col-span-2">
                     <button type="submit" name="_event" value="btnSearch1_Click" data-item="btnSearch1" data-node="n:btnSearch1" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500"><span class='icon'><svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M11.2 7A4.2 4.2 0 1 1 2.8 7a4.2 4.2 0 1 1 8.4 0z M10.4 10.4L14 14'/></svg></span>検索</button>
                     <button type="submit" name="_event" value="btnClear1_Click" data-item="btnClear1" data-node="n:btnClear1" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-300"><span class='icon'><svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M13 8a5 5 0 1 1-1.5-3.5 M13 2.5v3h-3'/></svg></span>クリア</button>
-                    <button type="button" data-item="btnNew1" data-node="n:btnNew1" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-violet-600 text-white hover:bg-violet-700 focus-visible:ring-violet-500">新規作成</button>
-                    <button type="button" data-item="btnExport1" data-node="n:btnExport1" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-emerald-600 text-white hover:bg-emerald-700 focus-visible:ring-emerald-500">Export</button>
                 </div>
             </div>
             <details data-node="n:messageView" class="message-view relative mb-4 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm" th:classappend="${messages.empty} ? 'hidden'" data-levels="Error,Warning,Info" data-clear-on-event="true" th:open="${messages.hasError}">
@@ -117,21 +68,25 @@
                 <button type="button" class="message-close absolute right-3 top-2.5 text-slate-400 transition hover:text-slate-600" title="閉じる">×</button>
             </details>
             <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                <div class="overflow-x-auto">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
+                    <h2 class="text-sm font-semibold text-slate-700">検索結果</h2>
+                    <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600" th:text="${#lists.size(form.Customers)} + ' 件'">0 件</span>
+                </div>
+                <div class="table-scroll max-h-[60vh] overflow-auto">
                     <table data-node="v:Customers" class="w-full min-w-[1200px] border-collapse text-sm" data-grid="Customers" data-page-sizes="10,20,30,50">
                         <thead>
                             <tr>
-                                <th data-node="n:SEQ" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500 w-12" data-nosort="true">No</th>
-                                <th data-node="v:Customers.MST00004_CustomerCD" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先コード</th>
-                                <th data-node="v:Customers.MST00004_CustomerInvoiceCD" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先請求コード</th>
-                                <th data-node="v:Customers.MST00004_CustomerKbn" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先区分</th>
-                                <th data-node="v:Customers.MST00004_CustomerNM" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先名</th>
-                                <th data-node="v:Customers.MST00004_CustomerOmission" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先略称</th>
-                                <th data-node="v:Customers.MST00004_AreaCD" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">地域コード</th>
-                                <th data-node="v:Customers.MST00004_Address1" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">住所1</th>
-                                <th data-node="v:Customers.MST00004_Address2" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">住所2</th>
-                                <th data-node="v:Customers.MST00004_Address3" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">住所3</th>
-                                <th data-node="n:btnPanel1" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500" data-nosort="true">操作</th>
+                                <th data-node="n:SEQ" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500 w-12" data-nosort="true">No</th>
+                                <th data-node="v:Customers.MST00004_CustomerCD" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先コード</th>
+                                <th data-node="v:Customers.MST00004_CustomerInvoiceCD" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先請求コード</th>
+                                <th data-node="v:Customers.MST00004_CustomerKbn" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先区分</th>
+                                <th data-node="v:Customers.MST00004_CustomerNM" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先名</th>
+                                <th data-node="v:Customers.MST00004_CustomerOmission" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先略称</th>
+                                <th data-node="v:Customers.MST00004_AreaCD" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">地域コード</th>
+                                <th data-node="v:Customers.MST00004_Address1" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">住所1</th>
+                                <th data-node="v:Customers.MST00004_Address2" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">住所2</th>
+                                <th data-node="v:Customers.MST00004_Address3" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">住所3</th>
+                                <th data-node="n:btnPanel1" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500" data-nosort="true">操作</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -153,6 +108,9 @@
                                     <button type="submit" name="_event" th:value="|Customers_btnDelete_Click:${st.count}|" data-node="n:btnDelete" class="inline-flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-red-600 text-white hover:bg-red-700" data-confirm="削除してもよろしいですか？" formnovalidate="formnovalidate">削除</button>
                                 </div></td>
                             </tr>
+                            <th:block th:if="${#lists.isEmpty(form.Customers)}">
+                                <tr th:replace="~{parts/ui :: emptyRow(11, '取引先がありません', '検索条件を変更して、もう一度検索してください。')}"></tr>
+                            </th:block>
                         </tbody>
                     </table>
                 </div>
@@ -392,7 +350,7 @@
             input.addEventListener('mousemove', e => input.style.cursor = onIcon(e) && !button.disabled ? 'pointer' : '');
             input.addEventListener('click', e => { if (onIcon(e) && !button.disabled) button.click(); });
           });
-          // 一覧（Tailwind の table.data）：縞模様（表示中の行に 1 行おきに alt）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
+          // 一覧（Tailwind の table.data）：縞模様（表示中の行に 1 行おきに bg-slate-50）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
           // 並べ替え（th.sortable。sort-asc / sort-desc）、列の幅の変更（.col-resizer）、表示中の行をまとめて選ぶ（data-check-all）
           root.querySelectorAll('table[data-grid]').forEach(table => {
             const body = table.tBodies[0];
@@ -421,7 +379,7 @@
             };
             const show = () => {
               const all = rows();
-              // 最初のページ以外の行（サーバーで隠した行 pg-off）は、ここで表示・非表示を決める
+              // 最初のページ以外の行（サーバーで隠した行 hidden）は、ここで表示・非表示を決める
               all.forEach(r => r.classList.remove('hidden'));
               // SEQ（td.seq）：並べ替えた後も上から 1, 2, …（data-row の行番号は変えない）
               all.forEach((r, i) => { const seq = r.querySelector('td.seq'); if (seq) seq.textContent = i + 1; });

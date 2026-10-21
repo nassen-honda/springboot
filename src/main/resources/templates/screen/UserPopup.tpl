@@ -10,8 +10,10 @@
     <title th:text="'ユーザ選択画面'">ユーザ選択画面</title>
 </head>
 <body class="bg-white text-slate-800">
-<main class="mx-auto max-w-[1400px] p-6">
-    <h1 class="mx-auto mb-6 max-w-[1600px] text-2xl font-bold tracking-tight text-slate-900" th:text="'ユーザ選択画面'">ユーザ選択画面</h1>
+<main class="mx-auto w-full max-w-[1400px] p-4 sm:p-6">
+    <div class="mb-6">
+        <div th:replace="~{parts/ui :: pageHeader('ユーザ選択', '一覧からユーザを選択してください。')}"></div>
+    </div>
     <form th:action="@{/UserPopup}" th:object="${form}" method="post">
 
         <!--/* メッセージ（MessageView を置いていない画面の既定の MessageView：Msg・Throw・エラー・入力チェック） */-->
@@ -26,46 +28,30 @@
 
         <!--/* 画面項目（画面定義の「画面」タブの順・入れ子） */-->
         <div data-node="n:TableMain" class="space-y-6">
-            <div data-node="n:panel1" class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div data-node="v:UserCD" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
-                    <div class="contents">
-                        <div class="flex min-h-9 items-center justify-end gap-1">
-                            <label class="text-sm font-medium text-slate-700" for="UserCD">ユーザコード</label>
-                        </div>
-                        <div class="flex min-w-0 max-w-sm items-center gap-2">
-                            <input type="text" id="UserCD" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400" th:field="*{UserCD}" autocomplete="off" maxlength="10"/>
-                        </div>
-                    </div>
-                    <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('UserCD')}" th:errors="*{UserCD}"></span>
-                </div>
-                <div data-node="v:UserNm" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
-                    <div class="contents">
-                        <div class="flex min-h-9 items-center justify-end gap-1">
-                            <label class="text-sm font-medium text-slate-700" for="UserNm">ユーザ名</label>
-                        </div>
-                        <div class="flex min-w-0 max-w-sm items-center gap-2">
-                            <input type="text" id="UserNm" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400" th:field="*{UserNm}" autocomplete="off" maxlength="50"/>
-                        </div>
-                    </div>
-                    <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('UserNm')}" th:errors="*{UserNm}"></span>
-                </div>
+            <div data-node="n:panel1" class="grid grid-cols-1 gap-x-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-2">
+                <div th:replace="~{parts/ui :: fieldText('v:UserCD', 'ユーザコード', 'UserCD', null, 10, null, null)}"></div>
+                <div th:replace="~{parts/ui :: fieldText('v:UserNm', 'ユーザ名', 'UserNm', null, 50, null, null)}"></div>
             </div>
             <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                <div class="overflow-x-auto">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
+                    <h2 class="text-sm font-semibold text-slate-700">検索結果</h2>
+                    <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600" th:text="${#lists.size(form.Users)} + ' 件'">0 件</span>
+                </div>
+                <div class="table-scroll max-h-[55vh] overflow-auto">
                     <table data-node="v:Users" class="w-full min-w-[1200px] border-collapse text-sm" data-grid="Users" data-page-sizes="10,20,30,50">
                         <thead>
                             <tr>
-                                <th data-node="n:SEQ" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500 w-12" data-nosort="true">No</th>
-                                <th data-node="v:Users.MST00002_UserCD" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">担当者コード</th>
-                                <th data-node="v:Users.MST00002_UserNM" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">担当者名</th>
-                                <th data-node="v:Users.MST00002_LoginUsr" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">ログインID</th>
-                                <th data-node="v:Users.MST00002_LoginPwd" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">パスワード</th>
-                                <th data-node="v:Users.MST00002_MailAddress" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">メールアドレス</th>
-                                <th data-node="v:Users.MST00002_UserRole" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">ロール</th>
-                                <th data-node="v:Users.MST00002_SectionCD" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">部署コード</th>
-                                <th data-node="v:Users.部署.MST00005_SectionNM" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">部署名</th>
-                                <th data-node="n:cellPanel1" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500" data-nosort="true">操作</th>
-                                <th data-node="n:btnPanel1" class="whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500" data-nosort="true">操作</th>
+                                <th data-node="n:SEQ" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500 w-12" data-nosort="true">No</th>
+                                <th data-node="v:Users.MST00002_UserCD" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">担当者コード</th>
+                                <th data-node="v:Users.MST00002_UserNM" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">担当者名</th>
+                                <th data-node="v:Users.MST00002_LoginUsr" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">ログインID</th>
+                                <th data-node="v:Users.MST00002_LoginPwd" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">パスワード</th>
+                                <th data-node="v:Users.MST00002_MailAddress" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">メールアドレス</th>
+                                <th data-node="v:Users.MST00002_UserRole" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">ロール</th>
+                                <th data-node="v:Users.MST00002_SectionCD" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">部署コード</th>
+                                <th data-node="v:Users.部署.MST00005_SectionNM" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">部署名</th>
+                                <th data-node="n:cellPanel1" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500" data-nosort="true">操作</th>
+                                <th data-node="n:btnPanel1" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500" data-nosort="true">操作</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -94,11 +80,14 @@
                                     <button type="button" data-item="btnDelete" data-node="n:btnDelete" class="inline-flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-red-600 text-white hover:bg-red-700" data-confirm="削除してもよろしいですか？" formnovalidate="formnovalidate">削除</button>
                                 </div></td>
                             </tr>
+                            <th:block th:if="${#lists.isEmpty(form.Users)}">
+                                <tr th:replace="~{parts/ui :: emptyRow(11, 'ユーザがいません', '検索条件を変更して、もう一度検索してください。')}"></tr>
+                            </th:block>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div data-node="n:buttonGroup1" class="mt-2 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-5">
+            <div data-node="n:buttonGroup1" class="flex flex-wrap items-center justify-end gap-3 border-t border-slate-100 pt-5">
                 <button type="submit" name="_event" value="btnOk_Click" data-item="btnOk" data-node="n:btnOk" class="inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1">確定</button>
                 <button type="submit" name="_event" value="btnCancel_Click" data-item="btnCancel" data-node="n:btnCancel" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-300">キャンセル</button>
             </div>
@@ -339,7 +328,7 @@
             input.addEventListener('mousemove', e => input.style.cursor = onIcon(e) && !button.disabled ? 'pointer' : '');
             input.addEventListener('click', e => { if (onIcon(e) && !button.disabled) button.click(); });
           });
-          // 一覧（Tailwind の table.data）：縞模様（表示中の行に 1 行おきに alt）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
+          // 一覧（Tailwind の table.data）：縞模様（表示中の行に 1 行おきに bg-slate-50）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
           // 並べ替え（th.sortable。sort-asc / sort-desc）、列の幅の変更（.col-resizer）、表示中の行をまとめて選ぶ（data-check-all）
           root.querySelectorAll('table[data-grid]').forEach(table => {
             const body = table.tBodies[0];
@@ -368,7 +357,7 @@
             };
             const show = () => {
               const all = rows();
-              // 最初のページ以外の行（サーバーで隠した行 pg-off）は、ここで表示・非表示を決める
+              // 最初のページ以外の行（サーバーで隠した行 hidden）は、ここで表示・非表示を決める
               all.forEach(r => r.classList.remove('hidden'));
               // SEQ（td.seq）：並べ替えた後も上から 1, 2, …（data-row の行番号は変えない）
               all.forEach((r, i) => { const seq = r.querySelector('td.seq'); if (seq) seq.textContent = i + 1; });

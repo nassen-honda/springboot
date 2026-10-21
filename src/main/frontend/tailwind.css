@@ -24,10 +24,4 @@
     html.screen-busy * {
         cursor: progress !important;
     }
-
-    /* 一覧の列幅をドラッグしている間：文字の選択を止める */
-    body.col-resizing {
-        cursor: col-resize;
-        user-select: none;
-    }
 }
