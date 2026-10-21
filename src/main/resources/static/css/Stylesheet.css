@@ -1,0 +1,44 @@
+/*
+ * プロジェクト固有のカスタム CSS（BaseStylesheet.css / app.css の後に読み込む）
+ *
+ * 役割：
+ *   - Tailwind の utility では表現しにくい、プロジェクト全体の上書きだけをここに書く。
+ *   - 画面個別の見た目は .tpl の utility class で指定する（ここに画面専用 CSS を増やさない）。
+ *   - utility を再定義するのではなく、テーマ変数・印刷・スクロールバーなど「横断的な上書き」に限定する。
+ */
+
+/* ===== ブランドカラー（Tailwind の blue をプロジェクト色で上書き） ===== */
+:root {
+    --color-blue-500: #2563eb;
+    --color-blue-600: #1d4ed8;
+    --color-blue-700: #1e40af;
+}
+
+/* ===== 日本語組版：約物を詰めて読みやすくする ===== */
+body {
+    font-feature-settings: "palt" 1;
+    letter-spacing: 0.01em;
+}
+
+/* ===== 一覧のスクロールバー分のガタつきを抑える ===== */
+.table-scroll {
+    scrollbar-gutter: stable;
+}
+
+/* ===== 印刷：ヘッダー・サイドバー・操作ボタンは出さない ===== */
+@media print {
+    header,
+    aside,
+    .no-print {
+        display: none !important;
+    }
+
+    main {
+        overflow: visible !important;
+        padding: 0 !important;
+    }
+
+    body {
+        background: #fff !important;
+    }
+}
