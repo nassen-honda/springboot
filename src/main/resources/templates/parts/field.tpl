@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--/* 共通 UI 部品（Tailwind CSS）: 画面の入力項目・見出しなどを 1 か所にまとめる。
-       画面は th:replace="~{parts/ui :: fieldText(...)}" の形で使う。 */-->
+       画面は th:replace="~{parts/field :: fieldText(...)}" の形で使う。 */-->
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 

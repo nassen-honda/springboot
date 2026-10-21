@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <!--/* 基本テンプレート WebPageBaseLayout（BaseObject/WebPageBaseTemplates/WebPageBaseLayout.tpl）
        テンプレート（BaseObjectCustomized/WebPageTemplates）の土台。画面は layout(title, content) を th:replace で呼び出す。
-       スタイルシート：Tailwind CSS のビルド結果（/css/app.css。src/main/frontend/tailwind.css から生成）。
+       スタイルシート：Tailwind CSS のビルド結果（/css/app.css。プロジェクト外の ../cem-tailwind-build/input.css から生成）。
        画面側の <main> に「min-w-0 flex-1 overflow-auto p-6」を付けると、本文だけがスクロールする。
        サイドメニューは lg 未満で引き出し（ハンバーガーで開閉）。 */-->
 <html lang="ja" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
@@ -10,7 +10,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:replace="${title}">タイトル</title>
-    <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}"/>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%232563eb'/%3E%3C/svg%3E">
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-800">

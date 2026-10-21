@@ -9,7 +9,7 @@
 <body>
 <main class="min-w-0 flex-1 overflow-auto p-4 sm:p-6">
     <div class="mx-auto mb-6 flex max-w-[1600px] flex-wrap items-end justify-between gap-4">
-        <div th:replace="~{parts/ui :: pageHeader('取引先マスタ一覧', '取引先の検索・登録・編集を行います。')}"></div>
+        <div th:replace="~{parts/field :: pageHeader('取引先マスタ一覧', '取引先の検索・登録・編集を行います。')}"></div>
         <div class="flex flex-wrap items-center gap-2">
             <button type="button" data-item="btnNew1" data-node="n:btnNew1"
                     class="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1">
@@ -31,19 +31,34 @@
                 <div class="mb-1 flex items-center justify-between xl:col-span-2">
                     <h2 class="text-sm font-semibold text-slate-700">検索条件</h2>
                 </div>
-                <div th:replace="~{parts/ui :: fieldText('v:CustomerCD', '取引先コード', 'CustomerCD', null, 10, null, null)}"></div>
-                <div th:replace="~{parts/ui :: fieldText('v:CustomerNM', '取引先名', 'CustomerNM', null, 100, null, null)}"></div>
-                <div th:replace="~{parts/ui :: fieldText('v:CustomerOmission', '取引先略称', 'CustomerOmission', null, 100, null, null)}"></div>
+                <div th:replace="~{parts/field :: fieldText('v:CustomerCD', '取引先コード', 'CustomerCD', null, 10, null, null)}"></div>
+                <div th:replace="~{parts/field :: fieldText('v:CustomerNM', '取引先名', 'CustomerNM', null, 100, null, null)}"></div>
+                <div th:replace="~{parts/field :: fieldText('v:CustomerOmission', '取引先略称', 'CustomerOmission', null, 100, null, null)}"></div>
                 <div data-node="n:table1" class="mt-2 grid grid-cols-1 gap-x-8 xl:col-span-2 xl:grid-cols-2">
-                    <div th:replace="~{parts/ui :: fieldText('v:UserCD', 'ユーザコード', 'UserCD', null, 10, null, null)}"></div>
-                    <div th:replace="~{parts/ui :: fieldText('v:UserName', 'ユーザ名', 'UserName', null, 50, null, null)}"></div>
+                    <div data-node="v:UserCD" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
+                        <div class="contents">
+                            <div class="flex min-h-9 items-center justify-end gap-1">
+                                <label class="text-sm font-medium text-slate-700" for="UserCD">ユーザコード</label>
+                            </div>
+                            <div class="flex min-w-0 max-w-sm items-center gap-2">
+                                <div class="relative w-full">
+                                    <input type="text" id="UserCD" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400 !pr-10 ico-search" th:field="*{UserCD}" autocomplete="off" maxlength="10"/>
+                                    <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.2"/><path d="M10.4 10.4L14 14"/></svg>
+                                </div>
+                                <button type="submit" name="_event" value="UserCD_Popup" class="btn-popup hidden" formnovalidate="formnovalidate" title="ユーザ選択画面">🔍</button>
+                            </div>
+                        </div>
+                        <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('UserCD')}" th:errors="*{UserCD}"></span>
+                    </div>
+                    <div th:replace="~{parts/field :: fieldText('v:UserName', 'ユーザ名', 'UserName', null, 50, null, null)}"></div>
                     <div data-node="v:CreateDate" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
                         <div class="contents">
                             <div class="flex min-h-9 items-center justify-end gap-1">
                                 <label class="text-sm font-medium text-slate-700" for="CreateDate-wareki">日付</label>
                             </div>
                             <div class="relative flex min-w-0 max-w-sm items-center gap-2">
-                                <input type="text" id="CreateDate-wareki" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400 !pr-10 bg-[length:1rem_1rem] bg-[right_0.75rem_center] bg-no-repeat bg-[url('/img/icon-calendar.svg')] ico-date" data-wareki-text="date" th:value="${form.viewState.wareki(form.CreateDate)}" placeholder="例: R7.10.17" autocomplete="off"/>
+                                <input type="text" id="CreateDate-wareki" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400 !pr-10 ico-date" data-wareki-text="date" th:value="${form.viewState.wareki(form.CreateDate)}" placeholder="例: R7.10.17" autocomplete="off"/>
+                                <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.6v2.6M10.5 1.6v2.6"/></svg>
                                 <button type="button" class="wareki-picker" data-wareki-picker="CreateDate" title="カレンダーから選ぶ" tabindex="-1" style="display: none">📅</button>
                                 <input type="date" id="CreateDate" th:field="*{CreateDate}" tabindex="-1"
                                        class="wareki-native pointer-events-none absolute bottom-0 left-0 h-px w-px border-0 p-0 opacity-0"/>
@@ -51,7 +66,7 @@
                         </div>
                         <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('CreateDate')}" th:errors="*{CreateDate}"></span>
                     </div>
-                    <div th:replace="~{parts/ui :: fieldSelect('v:CustomerKbn', '取引先区分', 'CustomerKbn', ${CustomerKbnItems}, null, true, null)}"></div>
+                    <div th:replace="~{parts/field :: fieldSelect('v:CustomerKbn', '取引先区分', 'CustomerKbn', ${CustomerKbnItems}, null, true, null)}"></div>
                 </div>
                 <div data-node="n:buttonGroup2" class="mt-2 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-5 xl:col-span-2">
                     <button type="submit" name="_event" value="btnSearch1_Click" data-item="btnSearch1" data-node="n:btnSearch1" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500"><span class='icon'><svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M11.2 7A4.2 4.2 0 1 1 2.8 7a4.2 4.2 0 1 1 8.4 0z M10.4 10.4L14 14'/></svg></span>検索</button>
@@ -109,7 +124,7 @@
                                 </div></td>
                             </tr>
                             <th:block th:if="${#lists.isEmpty(form.Customers)}">
-                                <tr th:replace="~{parts/ui :: emptyRow(11, '取引先がありません', '検索条件を変更して、もう一度検索してください。')}"></tr>
+                                <tr th:replace="~{parts/field :: emptyRow(11, '取引先がありません', '検索条件を変更して、もう一度検索してください。')}"></tr>
                             </th:block>
                         </tbody>
                     </table>

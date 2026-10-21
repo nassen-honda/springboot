@@ -9,7 +9,7 @@
 <body>
 <main class="min-w-0 flex-1 overflow-auto p-4 sm:p-6">
     <div class="mx-auto mb-6 max-w-[1600px]">
-        <div th:replace="~{parts/ui :: pageHeader('開発メニュー', '開発・動作確認用の操作を行います。')}"></div>
+        <div th:replace="~{parts/field :: pageHeader('開発メニュー', '開発・動作確認用の操作を行います。')}"></div>
     </div>
     <form class="mx-auto max-w-[1600px]" th:action="@{/Developer}" th:object="${form}" method="post" data-enter-key="true">
 

@@ -5,14 +5,14 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}"/>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%232563eb'/%3E%3C/svg%3E">
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
     <title th:text="'ユーザ選択画面'">ユーザ選択画面</title>
 </head>
 <body class="bg-white text-slate-800">
 <main class="mx-auto w-full max-w-[1400px] p-4 sm:p-6">
     <div class="mb-6">
-        <div th:replace="~{parts/ui :: pageHeader('ユーザ選択', '一覧からユーザを選択してください。')}"></div>
+        <div th:replace="~{parts/field :: pageHeader('ユーザ選択', '一覧からユーザを選択してください。')}"></div>
     </div>
     <form th:action="@{/UserPopup}" th:object="${form}" method="post">
 
@@ -29,8 +29,8 @@
         <!--/* 画面項目（画面定義の「画面」タブの順・入れ子） */-->
         <div data-node="n:TableMain" class="space-y-6">
             <div data-node="n:panel1" class="grid grid-cols-1 gap-x-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-2">
-                <div th:replace="~{parts/ui :: fieldText('v:UserCD', 'ユーザコード', 'UserCD', null, 10, null, null)}"></div>
-                <div th:replace="~{parts/ui :: fieldText('v:UserNm', 'ユーザ名', 'UserNm', null, 50, null, null)}"></div>
+                <div th:replace="~{parts/field :: fieldText('v:UserCD', 'ユーザコード', 'UserCD', null, 10, null, null)}"></div>
+                <div th:replace="~{parts/field :: fieldText('v:UserNm', 'ユーザ名', 'UserNm', null, 50, null, null)}"></div>
             </div>
             <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
@@ -81,7 +81,7 @@
                                 </div></td>
                             </tr>
                             <th:block th:if="${#lists.isEmpty(form.Users)}">
-                                <tr th:replace="~{parts/ui :: emptyRow(11, 'ユーザがいません', '検索条件を変更して、もう一度検索してください。')}"></tr>
+                                <tr th:replace="~{parts/field :: emptyRow(11, 'ユーザがいません', '検索条件を変更して、もう一度検索してください。')}"></tr>
                             </th:block>
                         </tbody>
                     </table>

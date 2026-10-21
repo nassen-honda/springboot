@@ -9,7 +9,7 @@
 <body>
 <main class="min-w-0 flex-1 overflow-auto p-4 sm:p-6">
     <div class="mx-auto mb-6 max-w-[1600px]">
-        <div th:replace="~{parts/ui :: pageHeader('取引先マスタ詳細', '取引先の情報を確認・編集します。')}"></div>
+        <div th:replace="~{parts/field :: pageHeader('取引先マスタ詳細', '取引先の情報を確認・編集します。')}"></div>
     </div>
     <form class="mx-auto max-w-[1600px]" th:action="@{/CustomerMasterDetail}" th:object="${form}" method="post">
 
@@ -40,35 +40,35 @@
                 </div>
                 <fieldset data-node="v:Customer">
                     <div class="grid grid-cols-1 gap-x-8 xl:grid-cols-2">
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_CustomerCD', '取引先コード', 'CustomerMST00004_CustomerCD', true, 10, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_CustomerInvoiceCD', '取引先請求コード', 'CustomerMST00004_CustomerInvoiceCD', null, 10, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldSelect('v:Customer.MST00004_CustomerKbn', '取引先区分', 'CustomerMST00004_CustomerKbn', ${CustomerMST00004_CustomerKbnItems}, true, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_CustomerNM', '取引先名', 'CustomerMST00004_CustomerNM', null, 100, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_CustomerOmission', '取引先略称', 'CustomerMST00004_CustomerOmission', null, 100, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_AreaCD', '地域コード', 'CustomerMST00004_AreaCD', null, 20, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Address1', '住所1', 'CustomerMST00004_Address1', null, 100, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Address2', '住所2', 'CustomerMST00004_Address2', null, 100, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Address3', '住所3', 'CustomerMST00004_Address3', null, 100, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Tel', '電話番号', 'CustomerMST00004_Tel', null, 20, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Fax', 'FAX', 'CustomerMST00004_Fax', null, 20, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Zip', '郵便番号', 'CustomerMST00004_Zip', null, 200, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_FromPlaceCD', '発地コード', 'CustomerMST00004_FromPlaceCD', null, 20, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_ToPlaceCD', '仕向地コード', 'CustomerMST00004_ToPlaceCD', null, 20, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_PaymentTermsCD', '支払条件コード', 'CustomerMST00004_PaymentTermsCD', true, 20, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_DeliveryLocation', '納入場所', 'CustomerMST00004_DeliveryLocation', null, 200, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_TradeTermsCD', '取引条件コード', 'CustomerMST00004_TradeTermsCD', null, 20, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Currency', '通貨', 'CustomerMST00004_Currency', null, 20, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_SectionNM', '部署名', 'CustomerMST00004_SectionNM', null, 200, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_UserCD', '担当者名', 'CustomerMST00004_UserCD', null, 10, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_MailAddress', 'メールアドレス', 'CustomerMST00004_MailAddress', null, 50, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_TaxRoundKBN', '消費税端数処理区分', 'CustomerMST00004_TaxRoundKBN', null, 2, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_TaxCalcKBN', '税額通知区分', 'CustomerMST00004_TaxCalcKBN', null, 2, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_InvoiceCreateFlg', '請求書作成フラグ', 'CustomerMST00004_InvoiceCreateFlg', null, 1, null, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldSelect('v:Customer.MST00004_DelFlg', '削除フラグ', 'CustomerMST00004_DelFlg', ${CustomerMST00004_DelFlgItems}, null, true, true)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_CreateUserCD', '作成者', 'CustomerMST00004_CreateUserCD', null, 10, true, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldDateTime('v:Customer.MST00004_CreateDate', '作成日時', 'CustomerMST00004_CreateDate', null, true, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_UpdateUserCD', '更新者', 'CustomerMST00004_UpdateUserCD', null, 10, true, null)}"></div>
-                        <div th:replace="~{parts/ui :: fieldDateTime('v:Customer.MST00004_UpdateDate', '更新日時', 'CustomerMST00004_UpdateDate', null, true, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_CustomerCD', '取引先コード', 'CustomerMST00004_CustomerCD', true, 10, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_CustomerInvoiceCD', '取引先請求コード', 'CustomerMST00004_CustomerInvoiceCD', null, 10, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldSelect('v:Customer.MST00004_CustomerKbn', '取引先区分', 'CustomerMST00004_CustomerKbn', ${CustomerMST00004_CustomerKbnItems}, true, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_CustomerNM', '取引先名', 'CustomerMST00004_CustomerNM', null, 100, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_CustomerOmission', '取引先略称', 'CustomerMST00004_CustomerOmission', null, 100, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_AreaCD', '地域コード', 'CustomerMST00004_AreaCD', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_Address1', '住所1', 'CustomerMST00004_Address1', null, 100, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_Address2', '住所2', 'CustomerMST00004_Address2', null, 100, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_Address3', '住所3', 'CustomerMST00004_Address3', null, 100, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_Tel', '電話番号', 'CustomerMST00004_Tel', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_Fax', 'FAX', 'CustomerMST00004_Fax', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_Zip', '郵便番号', 'CustomerMST00004_Zip', null, 200, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_FromPlaceCD', '発地コード', 'CustomerMST00004_FromPlaceCD', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_ToPlaceCD', '仕向地コード', 'CustomerMST00004_ToPlaceCD', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_PaymentTermsCD', '支払条件コード', 'CustomerMST00004_PaymentTermsCD', true, 20, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_DeliveryLocation', '納入場所', 'CustomerMST00004_DeliveryLocation', null, 200, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_TradeTermsCD', '取引条件コード', 'CustomerMST00004_TradeTermsCD', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_Currency', '通貨', 'CustomerMST00004_Currency', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_SectionNM', '部署名', 'CustomerMST00004_SectionNM', null, 200, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_UserCD', '担当者名', 'CustomerMST00004_UserCD', null, 10, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_MailAddress', 'メールアドレス', 'CustomerMST00004_MailAddress', null, 50, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_TaxRoundKBN', '消費税端数処理区分', 'CustomerMST00004_TaxRoundKBN', null, 2, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_TaxCalcKBN', '税額通知区分', 'CustomerMST00004_TaxCalcKBN', null, 2, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_InvoiceCreateFlg', '請求書作成フラグ', 'CustomerMST00004_InvoiceCreateFlg', null, 1, null, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldSelect('v:Customer.MST00004_DelFlg', '削除フラグ', 'CustomerMST00004_DelFlg', ${CustomerMST00004_DelFlgItems}, null, true, true)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_CreateUserCD', '作成者', 'CustomerMST00004_CreateUserCD', null, 10, true, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldDateTime('v:Customer.MST00004_CreateDate', '作成日時', 'CustomerMST00004_CreateDate', null, true, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldText('v:Customer.MST00004_UpdateUserCD', '更新者', 'CustomerMST00004_UpdateUserCD', null, 10, true, null)}"></div>
+                        <div th:replace="~{parts/field :: fieldDateTime('v:Customer.MST00004_UpdateDate', '更新日時', 'CustomerMST00004_UpdateDate', null, true, null)}"></div>
                     </div>
                 </fieldset>
                 <div data-node="n:buttonGroup1" class="mt-6 flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 pt-5">
