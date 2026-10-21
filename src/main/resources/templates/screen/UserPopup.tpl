@@ -5,113 +5,99 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" th:href="@{/css/BaseStylesheet.css}"/>
-    <link th:replace="~{parts/stylesheets :: links}"/>
+    <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
     <title th:text="'ユーザ選択画面'">ユーザ選択画面</title>
 </head>
-<body>
-<main>
-    <h1 th:text="'ユーザ選択画面'">ユーザ選択画面</h1>
-
-    <style>table.data tbody tr.pg-off { display: none; } html.screen-busy, html.screen-busy * { cursor: progress !important; }</style>
+<body class="bg-white text-slate-800">
+<main class="mx-auto w-full max-w-[1400px] p-4 sm:p-6">
+    <div class="mb-6">
+        <div th:replace="~{parts/ui :: pageHeader('ユーザ選択', '一覧からユーザを選択してください。')}"></div>
+    </div>
     <form th:action="@{/UserPopup}" th:object="${form}" method="post">
 
         <!--/* メッセージ（MessageView を置いていない画面の既定の MessageView：Msg・Throw・エラー・入力チェック） */-->
-        <div class="message-view" data-levels="Error,Warning,Info" data-clear-on-event="true">
-            <ul class="message-list">
-                <li class="message-item message-error" th:each="m : ${messages.error}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">エラーのメッセージ</span></li>
-                <li class="message-item message-warning" th:each="m : ${messages.warning}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">警告のメッセージ</span></li>
-                <li class="message-item message-info" th:each="m : ${messages.info}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">お知らせのメッセージ</span></li>
+        <div class="message-view relative mb-4 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm" th:classappend="${messages.empty} ? 'hidden'" data-levels="Error,Warning,Info" data-clear-on-event="true">
+            <ul class="message-list mt-2 space-y-1">
+                <li class="message-item message-error flex items-start gap-2 text-sm text-red-600" th:each="m : ${messages.error}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">✖</span><span class="message-text" th:text="${m.description}">エラーのメッセージ</span></li>
+                <li class="message-item message-warning flex items-start gap-2 text-sm text-amber-600" th:each="m : ${messages.warning}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">⚠</span><span class="message-text" th:text="${m.description}">警告のメッセージ</span></li>
+                <li class="message-item message-info flex items-start gap-2 text-sm text-blue-600" th:each="m : ${messages.info}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">ℹ</span><span class="message-text" th:text="${m.description}">お知らせのメッセージ</span></li>
             </ul>
-            <button type="button" class="message-close" title="閉じる">×</button>
+            <button type="button" class="message-close absolute right-3 top-2.5 text-slate-400 transition hover:text-slate-600" title="閉じる">×</button>
         </div>
 
         <!--/* 画面項目（画面定義の「画面」タブの順・入れ子） */-->
-        <div data-node="n:TableMain" class="layout">
-            <div data-node="n:panel1" class="panel no-caption">
-                <div data-node="v:UserCD" class="field" style="--caption-width: 25%">
-                    <div class="controls">
-                        <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                            <label class="label-item" for="UserCD">ユーザコード</label>
-                        </div>
-                        <div class="cell" style="flex: 1">
-                            <input type="text" id="UserCD" class="ctl w-sm" th:field="*{UserCD}" autocomplete="off" maxlength="10"/>
-                        </div>
-                    </div>
-                    <span class="error" th:if="${#fields.hasErrors('UserCD')}" th:errors="*{UserCD}"></span>
-                </div>
-                <div data-node="v:UserNm" class="field" style="--caption-width: 25%">
-                    <div class="controls">
-                        <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                            <label class="label-item" for="UserNm">ユーザ名</label>
-                        </div>
-                        <div class="cell" style="flex: 1">
-                            <input type="text" id="UserNm" class="ctl w-sm" th:field="*{UserNm}" autocomplete="off" maxlength="50"/>
-                        </div>
-                    </div>
-                    <span class="error" th:if="${#fields.hasErrors('UserNm')}" th:errors="*{UserNm}"></span>
-                </div>
+        <div data-node="n:TableMain" class="space-y-6">
+            <div data-node="n:panel1" class="grid grid-cols-1 gap-x-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-2">
+                <div th:replace="~{parts/ui :: fieldText('v:UserCD', 'ユーザコード', 'UserCD', null, 10, null, null)}"></div>
+                <div th:replace="~{parts/ui :: fieldText('v:UserNm', 'ユーザ名', 'UserNm', null, 50, null, null)}"></div>
             </div>
-            <div class="card">
-                <div class="table-scroll">
-                    <table data-node="v:Users" class="data" data-grid="Users" data-page-sizes="10,20,30,50">
+            <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
+                    <h2 class="text-sm font-semibold text-slate-700">検索結果</h2>
+                    <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600" th:text="${#lists.size(form.Users)} + ' 件'">0 件</span>
+                </div>
+                <div class="table-scroll max-h-[55vh] overflow-auto">
+                    <table data-node="v:Users" class="w-full min-w-[1200px] border-collapse text-sm" data-grid="Users" data-page-sizes="10,20,30,50">
                         <thead>
                             <tr>
-                                <th data-node="n:SEQ" class="row-number a-center" data-nosort="true">No</th>
-                                <th data-node="v:Users.MST00002_UserCD" class="a-left">担当者コード</th>
-                                <th data-node="v:Users.MST00002_UserNM" class="a-left">担当者名</th>
-                                <th data-node="v:Users.MST00002_LoginUsr" class="a-left">ログインID</th>
-                                <th data-node="v:Users.MST00002_LoginPwd" class="a-left">パスワード</th>
-                                <th data-node="v:Users.MST00002_MailAddress" class="a-left">メールアドレス</th>
-                                <th data-node="v:Users.MST00002_UserRole" class="a-left">ロール</th>
-                                <th data-node="v:Users.MST00002_SectionCD" class="a-left">部署コード</th>
-                                <th data-node="v:Users.部署.MST00005_SectionNM" class="a-left">部署名</th>
-                                <th data-node="n:cellPanel1" class="cell-panel a-center" data-nosort="true">操作</th>
-                                <th data-node="n:btnPanel1" class="cell-panel a-center" data-nosort="true">操作</th>
+                                <th data-node="n:SEQ" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500 w-12" data-nosort="true">No</th>
+                                <th data-node="v:Users.MST00002_UserCD" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">担当者コード</th>
+                                <th data-node="v:Users.MST00002_UserNM" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">担当者名</th>
+                                <th data-node="v:Users.MST00002_LoginUsr" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">ログインID</th>
+                                <th data-node="v:Users.MST00002_LoginPwd" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">パスワード</th>
+                                <th data-node="v:Users.MST00002_MailAddress" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">メールアドレス</th>
+                                <th data-node="v:Users.MST00002_UserRole" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">ロール</th>
+                                <th data-node="v:Users.MST00002_SectionCD" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">部署コード</th>
+                                <th data-node="v:Users.部署.MST00005_SectionNM" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">部署名</th>
+                                <th data-node="n:cellPanel1" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500" data-nosort="true">操作</th>
+                                <th data-node="n:btnPanel1" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500" data-nosort="true">操作</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="row, st : *{Users}" th:attr="data-row=${st.count}" class="rec-end clickable" th:classappend="${(st.index &gt;= 10 ? 'pg-off' : (st.even ? 'alt' : ''))}">
-                                <td class="row-number a-center seq" data-node="n:SEQ" th:text="${st.count}">1</td>
-                                <td class="a-left" data-node="v:Users.MST00002_UserCD" th:text="${row.mst00002UserCD}">－</td>
-                                <td class="a-left" data-node="v:Users.MST00002_UserNM" th:text="${row.mst00002UserNM}">－</td>
-                                <td class="a-left" data-node="v:Users.MST00002_LoginUsr" th:text="${row.mst00002LoginUsr}">－</td>
-                                <td class="a-left" data-node="v:Users.MST00002_LoginPwd" th:text="${row.mst00002LoginPwd}">－</td>
-                                <td class="a-left" data-node="v:Users.MST00002_MailAddress" th:text="${row.mst00002MailAddress}">－</td>
-                                <td class="a-left" data-node="v:Users.MST00002_UserRole" th:text="${row.mst00002UserRole}">－</td>
-                                <td class="a-left" data-node="v:Users.MST00002_SectionCD" th:text="${row.mst00002SectionCD}">－</td>
-                                <td class="a-left" data-node="v:Users.部署.MST00005_SectionNM" th:text="${row.scriptRefs['部署']?.mst00005SectionNM}">－</td>
-                                <td class="cell-panel a-center" data-node="n:cellPanel1">
-                                    <span class="cell-item" data-node="v:Users.MST00002_CreateUserCD" style="display: inline-flex; align-items: center; gap: 4px">
+                            <tr th:each="row, st : *{Users}" th:attr="data-row=${st.count}" class="cursor-pointer hover:bg-blue-50" th:classappend="${(st.index &gt;= 10 ? 'hidden' : (st.even ? 'bg-slate-50' : ''))}">
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-center w-12 text-slate-400 seq" data-node="n:SEQ" th:text="${st.count}">1</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Users.MST00002_UserCD" th:text="${row.mst00002UserCD}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Users.MST00002_UserNM" th:text="${row.mst00002UserNM}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Users.MST00002_LoginUsr" th:text="${row.mst00002LoginUsr}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Users.MST00002_LoginPwd" th:text="${row.mst00002LoginPwd}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Users.MST00002_MailAddress" th:text="${row.mst00002MailAddress}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Users.MST00002_UserRole" th:text="${row.mst00002UserRole}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Users.MST00002_SectionCD" th:text="${row.mst00002SectionCD}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Users.部署.MST00005_SectionNM" th:text="${row.scriptRefs['部署']?.mst00005SectionNM}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-center whitespace-nowrap" data-node="n:cellPanel1">
+                                    <span class="cell-item inline-flex items-center gap-1" data-node="v:Users.MST00002_CreateUserCD">
                                         <span class="cell-value" th:text="${row.mst00002CreateUserCD}">－</span>
                                     </span>
-                                    <span class="cell-item" data-node="v:Users.MST00002_UpdateUserCD" style="display: inline-flex; align-items: center; gap: 4px">
+                                    <span class="cell-item inline-flex items-center gap-1" data-node="v:Users.MST00002_UpdateUserCD">
                                         <span class="cell-value" th:text="${row.mst00002UpdateUserCD}">－</span>
                                     </span>
                                 </td>
-                                <td class="cell-panel a-center" data-node="n:btnPanel1">
-                                    <button type="button" data-item="btnDetail" data-node="n:btnDetail" class="btn btn-sm btn-view" formnovalidate="formnovalidate">詳細</button>
-                                    <button type="button" data-item="btnEdit" data-node="n:btnEdit" class="btn btn-sm btn-edit" formnovalidate="formnovalidate">編集</button>
-                                    <button type="button" data-item="btnCopy" data-node="n:btnCopy" class="btn btn-sm btn-copy" formnovalidate="formnovalidate">複製</button>
-                                    <button type="button" data-item="btnDelete" data-node="n:btnDelete" class="btn btn-sm btn-del" data-confirm="削除してもよろしいですか？" formnovalidate="formnovalidate">削除</button>
-                                </td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-center" data-node="n:btnPanel1"><div class="flex flex-wrap justify-center gap-1">
+                                    <button type="button" data-item="btnDetail" data-node="n:btnDetail" class="inline-flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100" formnovalidate="formnovalidate">詳細</button>
+                                    <button type="button" data-item="btnEdit" data-node="n:btnEdit" class="inline-flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-blue-600 text-white hover:bg-blue-700" formnovalidate="formnovalidate">編集</button>
+                                    <button type="button" data-item="btnCopy" data-node="n:btnCopy" class="inline-flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-amber-500 text-white hover:bg-amber-600" formnovalidate="formnovalidate">複製</button>
+                                    <button type="button" data-item="btnDelete" data-node="n:btnDelete" class="inline-flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-red-600 text-white hover:bg-red-700" data-confirm="削除してもよろしいですか？" formnovalidate="formnovalidate">削除</button>
+                                </div></td>
                             </tr>
+                            <th:block th:if="${#lists.isEmpty(form.Users)}">
+                                <tr th:replace="~{parts/ui :: emptyRow(11, 'ユーザがいません', '検索条件を変更して、もう一度検索してください。')}"></tr>
+                            </th:block>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div data-node="n:buttonGroup1" class="panel button-group actions no-caption">
-                <button type="submit" name="_event" value="btnOk_Click" data-item="btnOk" data-node="n:btnOk" class="btn" style="background: #2B579A; color: #fff; border-color: #2B579A">確定</button>
-                <button type="submit" name="_event" value="btnCancel_Click" data-item="btnCancel" data-node="n:btnCancel" class="btn">キャンセル</button>
+            <div data-node="n:buttonGroup1" class="flex flex-wrap items-center justify-end gap-3 border-t border-slate-100 pt-5">
+                <button type="submit" name="_event" value="btnOk_Click" data-item="btnOk" data-node="n:btnOk" class="inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1">確定</button>
+                <button type="submit" name="_event" value="btnCancel_Click" data-item="btnCancel" data-node="n:btnCancel" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-300">キャンセル</button>
             </div>
         </div>
     </form>
 
     <!--/* ポップアップの画面（Popup の画面を Call で開いたとき）：Close で閉じる */-->
-    <div class="popup-overlay" th:if="${popup}"
-         style="position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4)">
-        <iframe class="popup-frame" th:src="@{${popup.url}}" th:title="${popup.screenId}"
-                th:style="|width: min(95vw, ${popup.width}); height: min(90vh, ${popup.height}); border: 0; border-radius: 6px; background: #fff; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)|"></iframe>
+    <div class="popup-overlay fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" th:if="${popup}">
+        <iframe class="popup-frame max-h-[90vh] w-full max-w-[95vw] rounded-xl border-0 bg-white shadow-2xl" th:src="@{${popup.url}}" th:title="${popup.screenId}"
+                th:style="|width: min(95vw, ${popup.width}); height: min(90vh, ${popup.height})|"></iframe>
     </div>
 
     <!--/* 画面の部分更新（自動生成）：送信を fetch で送り、返ってきた画面で main の中身を入れ替える（ちらつかない） */-->
@@ -329,7 +315,7 @@
             const max = Number(input.dataset.maxSize) * 1024 * 1024;
             if ([...input.files].some(f => f.size > max)) { window.alert(`ファイルは ${input.dataset.maxSize} MB までです。`); input.value = ''; }
           }));
-          // ポップアップ画面の 🔍 のボタン（.btn-popup）・和暦の 📅 のボタン（.wareki-picker）：入力欄の中にアイコン（BaseStylesheet の ico-search・ico-date）がある場合はボタンを隠し、
+          // ポップアップ画面の 🔍 のボタン（.btn-popup）・和暦の 📅 のボタン（.wareki-picker）：入力欄の中にアイコン（Tailwind の ico-search・ico-date）がある場合はボタンを隠し、
           // アイコン（入力欄の右端）のクリックでボタンを押す（🔍 は送信して Event 項目.Popup、📅 はカレンダー）。アイコンの上はマウスの形を指にする
           root.querySelectorAll('.btn-popup, .wareki-picker').forEach(button => {
             const input = button.parentElement && button.parentElement.querySelector(button.classList.contains('btn-popup') ? 'input.ico-search' : 'input.ico-date[data-wareki-text]');
@@ -342,7 +328,7 @@
             input.addEventListener('mousemove', e => input.style.cursor = onIcon(e) && !button.disabled ? 'pointer' : '');
             input.addEventListener('click', e => { if (onIcon(e) && !button.disabled) button.click(); });
           });
-          // 一覧（BaseStylesheet の table.data）：縞模様（表示中の行に 1 行おきに alt）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
+          // 一覧（Tailwind の table.data）：縞模様（表示中の行に 1 行おきに bg-slate-50）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
           // 並べ替え（th.sortable。sort-asc / sort-desc）、列の幅の変更（.col-resizer）、表示中の行をまとめて選ぶ（data-check-all）
           root.querySelectorAll('table[data-grid]').forEach(table => {
             const body = table.tBodies[0];
@@ -357,18 +343,22 @@
             const showSize = showPages && table.dataset.pagerPageSize !== 'false';
             let page = 0;
             let pager = null;
-            const stripe = () => rows().filter(r => r.style.display !== 'none').forEach((r, i) => r.classList.toggle('alt', i % 2 === 1));
+            const stripe = () => rows().filter(r => r.style.display !== 'none').forEach((r, i) => r.classList.toggle('bg-slate-50', i % 2 === 1));
             const link = (text, to, css) => {
               const a = document.createElement('a');
-              a.className = 'pg' + (css ? ' ' + css : '');
+              a.className = 'pg ' + (css ? css + ' ' : '')
+                + (css === 'active' ? 'inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-blue-600 bg-blue-600 px-2 text-sm font-semibold text-white'
+                  : css === 'disabled' ? 'pointer-events-none inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-2 text-sm text-slate-300'
+                  : css === 'dots' ? 'inline-flex h-8 min-w-8 cursor-default items-center justify-center px-2 text-sm text-slate-400'
+                  : 'inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-slate-300 bg-white px-2 text-sm text-slate-700 transition hover:border-blue-500 hover:text-blue-600');
               a.textContent = text;
               a.dataset.page = to;
               return a;
             };
             const show = () => {
               const all = rows();
-              // 最初のページ以外の行（サーバーで隠した行 pg-off）は、ここで表示・非表示を決める
-              all.forEach(r => r.classList.remove('pg-off'));
+              // 最初のページ以外の行（サーバーで隠した行 hidden）は、ここで表示・非表示を決める
+              all.forEach(r => r.classList.remove('hidden'));
               // SEQ（td.seq）：並べ替えた後も上から 1, 2, …（data-row の行番号は変えない）
               all.forEach((r, i) => { const seq = r.querySelector('td.seq'); if (seq) seq.textContent = i + 1; });
               if (pager && showTotal) pager.querySelector('.total span').textContent = all.length;
@@ -394,12 +384,12 @@
             };
             if (showTotal || size) {
               pager = document.createElement('div');
-              pager.className = 'pager';
+              pager.className = 'pager flex flex-wrap items-center justify-end gap-1.5 px-3 py-3';
               // 件数がない場合も、表示件数の選択・ページ番号は右に寄せる（.total の margin-right: auto の代わり）
-              pager.innerHTML = showTotal ? '<span class="total">件数：<span></span></span>' : '<span class="total"></span>';
+              pager.innerHTML = showTotal ? '<span class="total mr-auto text-sm text-slate-600">件数：<span></span></span>' : '<span class="total mr-auto"></span>';
               if (showSize) {
                 if (!sizes.includes(size)) sizes.unshift(size);
-                pager.insertAdjacentHTML('beforeend', '<select class="ctl sel page-size">'
+                pager.insertAdjacentHTML('beforeend', '<select class="page-size mr-2 h-8 w-32 rounded-md border border-slate-300 bg-white px-2 text-sm text-slate-700">'
                   + sizes.map(s => '<option value="' + s + '"' + (s === size ? ' selected' : '') + '>' + s + '件/ページ</option>').join('') + '</select>');
                 pager.querySelector('select').addEventListener('change', e => { size = Number(e.target.value); page = 0; show(); });
               }
@@ -420,8 +410,12 @@
                   // 幅を変えた直後のクリック・取っ手のクリックは並べ替えない
                   if (e.target.closest('.col-resizer') || table.dataset.resized) return;
                   const asc = !th.classList.contains('sort-asc');
-                  heads.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+                  heads.forEach(h => {
+                    h.classList.remove('sort-asc', 'sort-desc');
+                    h.querySelector('.sort-indicator')?.remove();
+                  });
                   th.classList.add(asc ? 'sort-asc' : 'sort-desc');
+                  th.insertAdjacentHTML('beforeend', '<span class="sort-indicator ml-1 text-[10px] text-blue-600" aria-hidden="true">' + (asc ? '▲' : '▼') + '</span>');
                   const sorted = rows().sort((a, b) => {
                     const x = a.cells[index].textContent.trim(), y = b.cells[index].textContent.trim();
                     const nx = Number(x.replace(/,/g, '')), ny = Number(y.replace(/,/g, ''));
@@ -477,6 +471,7 @@
           // 件数（折りたたんだときの 1 行）。Error があるときは開く
           function refresh(view) {
             const items = [...view.querySelectorAll('.message-item')];
+            view.classList.toggle('hidden', items.length === 0);
             const summary = view.querySelector('.message-summary');
             if (summary) summary.textContent = LEVELS.map(l => [l, items.filter(li => levelOf(li) === l).length]).filter(x => x[1] > 0).map(x => NAMES[x[0]] + ' ' + x[1] + ' 件').join('・');
             if (view.tagName === 'DETAILS' && items.some(li => levelOf(li) === 'Error')) view.open = true;
@@ -491,7 +486,12 @@
             const view = views().find(v => accepts(v, level));
             if (!view) return false;
             const li = document.createElement('li');
-            li.className = 'message-item message-' + level.toLowerCase();
+            li.className = 'message-item message-' + level.toLowerCase() + ' flex items-start gap-2 py-0.5 text-sm '
+              + (level === 'Error' ? 'text-red-600' : level === 'Warning' ? 'text-amber-600' : 'text-blue-600');
+            const icon = document.createElement('span');
+            icon.className = 'shrink-0';
+            icon.textContent = level === 'Error' ? '✖' : level === 'Warning' ? '⚠' : 'ℹ';
+            li.appendChild(icon);
             if (item) li.dataset.item = item;
             const span = document.createElement('span');
             span.className = 'message-text';
@@ -500,7 +500,7 @@
             const list = view.querySelector('.message-list');
             const next = [...list.children].find(c => LEVELS.indexOf(levelOf(c)) > LEVELS.indexOf(level));
             list.insertBefore(li, next || null);
-            view.classList.remove('message-closed');
+            view.classList.remove('hidden');
             refresh(view);
             autoHide(view, li);
             return true;
@@ -520,7 +520,7 @@
             // × で閉じる（次のメッセージで再び表示する）
             const close = e.target.closest('.message-close');
             if (close) {
-              close.closest('.message-view').classList.add('message-closed');
+              close.closest('.message-view').classList.add('hidden');
               return;
             }
             // 項目付きのメッセージ：その入力欄へ移動する

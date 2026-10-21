@@ -7,360 +7,73 @@
     <title th:text="'取引先マスタ詳細'">取引先マスタ詳細</title>
 </head>
 <body>
-<main>
-    <h1 th:text="'取引先マスタ詳細'">取引先マスタ詳細</h1>
-
-    <style>table.data tbody tr.pg-off { display: none; } html.screen-busy, html.screen-busy * { cursor: progress !important; }</style>
-    <form th:action="@{/CustomerMasterDetail}" th:object="${form}" method="post">
+<main class="min-w-0 flex-1 overflow-auto p-4 sm:p-6">
+    <div class="mx-auto mb-6 max-w-[1600px]">
+        <div th:replace="~{parts/ui :: pageHeader('取引先マスタ詳細', '取引先の情報を確認・編集します。')}"></div>
+    </div>
+    <form class="mx-auto max-w-[1600px]" th:action="@{/CustomerMasterDetail}" th:object="${form}" method="post">
 
         <!--/* メッセージ（MessageView を置いていない画面の既定の MessageView：Msg・Throw・エラー・入力チェック） */-->
-        <div class="message-view" data-levels="Error,Warning,Info" data-clear-on-event="true">
-            <ul class="message-list">
-                <li class="message-item message-error" th:each="m : ${messages.error}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">エラーのメッセージ</span></li>
-                <li class="message-item message-warning" th:each="m : ${messages.warning}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">警告のメッセージ</span></li>
-                <li class="message-item message-info" th:each="m : ${messages.info}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">お知らせのメッセージ</span></li>
+        <div class="message-view relative mb-4 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm" th:classappend="${messages.empty} ? 'hidden'" data-levels="Error,Warning,Info" data-clear-on-event="true">
+            <ul class="message-list mt-2 space-y-1">
+                <li class="message-item message-error flex items-start gap-2 text-sm text-red-600" th:each="m : ${messages.error}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">✖</span><span class="message-text" th:text="${m.description}">エラーのメッセージ</span></li>
+                <li class="message-item message-warning flex items-start gap-2 text-sm text-amber-600" th:each="m : ${messages.warning}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">⚠</span><span class="message-text" th:text="${m.description}">警告のメッセージ</span></li>
+                <li class="message-item message-info flex items-start gap-2 text-sm text-blue-600" th:each="m : ${messages.info}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">ℹ</span><span class="message-text" th:text="${m.description}">お知らせのメッセージ</span></li>
             </ul>
-            <button type="button" class="message-close" title="閉じる">×</button>
+            <button type="button" class="message-close absolute right-3 top-2.5 text-slate-400 transition hover:text-slate-600" title="閉じる">×</button>
         </div>
 
         <!--/* 画面項目（画面定義の「画面」タブの順・入れ子） */-->
-        <div data-node="n:TableMain" class="layout">
-            <div data-node="n:Panel" class="panel no-caption">
-                <button type="submit" name="_event" value="btnReturn_Click" data-item="btnReturn" data-node="n:btnReturn" class="btn">戻る</button>
-                <fieldset data-node="v:Customer" class="group no-caption">
-                    <div class="columns" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px">
-                        <div data-node="v:Customer.MST00004_CustomerCD" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_CustomerCD">取引先コード</label>
-                                    <span class="required">*</span>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_CustomerCD" class="ctl w-sm" th:field="*{CustomerMST00004_CustomerCD}" autocomplete="off" maxlength="10"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_CustomerCD')}" th:errors="*{CustomerMST00004_CustomerCD}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_CustomerInvoiceCD" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_CustomerInvoiceCD">取引先請求コード</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_CustomerInvoiceCD" class="ctl w-sm" th:field="*{CustomerMST00004_CustomerInvoiceCD}" autocomplete="off" maxlength="10"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_CustomerInvoiceCD')}" th:errors="*{CustomerMST00004_CustomerInvoiceCD}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_CustomerKbn" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_CustomerKbn">取引先区分</label>
-                                    <span class="required">*</span>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <select id="CustomerMST00004_CustomerKbn" class="ctl sel w-sm" th:field="*{CustomerMST00004_CustomerKbn}">
-                                        <option th:each="item : ${CustomerMST00004_CustomerKbnItems}" th:value="${item.key}" th:text="${item.value}">項目</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_CustomerKbn')}" th:errors="*{CustomerMST00004_CustomerKbn}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_CustomerNM" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_CustomerNM">取引先名</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_CustomerNM" class="ctl w-sm" th:field="*{CustomerMST00004_CustomerNM}" autocomplete="off" maxlength="100"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_CustomerNM')}" th:errors="*{CustomerMST00004_CustomerNM}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_CustomerOmission" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_CustomerOmission">取引先略称</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_CustomerOmission" class="ctl w-sm" th:field="*{CustomerMST00004_CustomerOmission}" autocomplete="off" maxlength="100"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_CustomerOmission')}" th:errors="*{CustomerMST00004_CustomerOmission}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_AreaCD" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_AreaCD">地域コード</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_AreaCD" class="ctl w-sm" th:field="*{CustomerMST00004_AreaCD}" autocomplete="off" maxlength="20"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_AreaCD')}" th:errors="*{CustomerMST00004_AreaCD}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_Address1" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_Address1">住所1</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_Address1" class="ctl w-sm" th:field="*{CustomerMST00004_Address1}" autocomplete="off" maxlength="100"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_Address1')}" th:errors="*{CustomerMST00004_Address1}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_Address2" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_Address2">住所2</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_Address2" class="ctl w-sm" th:field="*{CustomerMST00004_Address2}" autocomplete="off" maxlength="100"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_Address2')}" th:errors="*{CustomerMST00004_Address2}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_Address3" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_Address3">住所3</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_Address3" class="ctl w-sm" th:field="*{CustomerMST00004_Address3}" autocomplete="off" maxlength="100"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_Address3')}" th:errors="*{CustomerMST00004_Address3}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_Tel" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_Tel">電話番号</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_Tel" class="ctl w-sm" th:field="*{CustomerMST00004_Tel}" autocomplete="off" maxlength="20"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_Tel')}" th:errors="*{CustomerMST00004_Tel}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_Fax" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_Fax">FAX</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_Fax" class="ctl w-sm" th:field="*{CustomerMST00004_Fax}" autocomplete="off" maxlength="20"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_Fax')}" th:errors="*{CustomerMST00004_Fax}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_Zip" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_Zip">郵便番号</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_Zip" class="ctl w-sm" th:field="*{CustomerMST00004_Zip}" autocomplete="off" maxlength="200"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_Zip')}" th:errors="*{CustomerMST00004_Zip}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_FromPlaceCD" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_FromPlaceCD">発地コード</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_FromPlaceCD" class="ctl w-sm" th:field="*{CustomerMST00004_FromPlaceCD}" autocomplete="off" maxlength="20"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_FromPlaceCD')}" th:errors="*{CustomerMST00004_FromPlaceCD}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_ToPlaceCD" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_ToPlaceCD">仕向地コード</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_ToPlaceCD" class="ctl w-sm" th:field="*{CustomerMST00004_ToPlaceCD}" autocomplete="off" maxlength="20"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_ToPlaceCD')}" th:errors="*{CustomerMST00004_ToPlaceCD}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_PaymentTermsCD" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_PaymentTermsCD">支払条件コード</label>
-                                    <span class="required">*</span>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_PaymentTermsCD" class="ctl w-sm" th:field="*{CustomerMST00004_PaymentTermsCD}" autocomplete="off" maxlength="20"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_PaymentTermsCD')}" th:errors="*{CustomerMST00004_PaymentTermsCD}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_DeliveryLocation" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_DeliveryLocation">納入場所</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_DeliveryLocation" class="ctl w-sm" th:field="*{CustomerMST00004_DeliveryLocation}" autocomplete="off" maxlength="200"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_DeliveryLocation')}" th:errors="*{CustomerMST00004_DeliveryLocation}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_TradeTermsCD" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_TradeTermsCD">取引条件コード</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_TradeTermsCD" class="ctl w-sm" th:field="*{CustomerMST00004_TradeTermsCD}" autocomplete="off" maxlength="20"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_TradeTermsCD')}" th:errors="*{CustomerMST00004_TradeTermsCD}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_Currency" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_Currency">通貨</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_Currency" class="ctl w-sm" th:field="*{CustomerMST00004_Currency}" autocomplete="off" maxlength="20"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_Currency')}" th:errors="*{CustomerMST00004_Currency}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_SectionNM" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_SectionNM">部署名</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_SectionNM" class="ctl w-sm" th:field="*{CustomerMST00004_SectionNM}" autocomplete="off" maxlength="200"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_SectionNM')}" th:errors="*{CustomerMST00004_SectionNM}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_UserCD" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_UserCD">担当者名</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_UserCD" class="ctl w-sm" th:field="*{CustomerMST00004_UserCD}" autocomplete="off" maxlength="10"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_UserCD')}" th:errors="*{CustomerMST00004_UserCD}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_MailAddress" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_MailAddress">メールアドレス</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_MailAddress" class="ctl w-sm" th:field="*{CustomerMST00004_MailAddress}" autocomplete="off" maxlength="50"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_MailAddress')}" th:errors="*{CustomerMST00004_MailAddress}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_TaxRoundKBN" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_TaxRoundKBN">消費税端数処理区分</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_TaxRoundKBN" class="ctl w-sm" th:field="*{CustomerMST00004_TaxRoundKBN}" autocomplete="off" maxlength="2"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_TaxRoundKBN')}" th:errors="*{CustomerMST00004_TaxRoundKBN}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_TaxCalcKBN" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_TaxCalcKBN">税額通知区分</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_TaxCalcKBN" class="ctl w-sm" th:field="*{CustomerMST00004_TaxCalcKBN}" autocomplete="off" maxlength="2"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_TaxCalcKBN')}" th:errors="*{CustomerMST00004_TaxCalcKBN}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_InvoiceCreateFlg" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_InvoiceCreateFlg">請求書作成フラグ</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_InvoiceCreateFlg" class="ctl w-sm" th:field="*{CustomerMST00004_InvoiceCreateFlg}" autocomplete="off" maxlength="1"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_InvoiceCreateFlg')}" th:errors="*{CustomerMST00004_InvoiceCreateFlg}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_DelFlg" class="field" style="--caption-width: 25%; display: none">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_DelFlg">削除フラグ</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <select id="CustomerMST00004_DelFlg" class="ctl sel w-sm" th:field="*{CustomerMST00004_DelFlg}">
-                                        <option value=""></option>
-                                        <option th:each="item : ${CustomerMST00004_DelFlgItems}" th:value="${item.key}" th:text="${item.value}">項目</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_DelFlg')}" th:errors="*{CustomerMST00004_DelFlg}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_CreateUserCD" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_CreateUserCD">作成者</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_CreateUserCD" class="ctl w-sm" th:field="*{CustomerMST00004_CreateUserCD}" readonly="readonly" autocomplete="off" maxlength="10"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_CreateUserCD')}" th:errors="*{CustomerMST00004_CreateUserCD}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_CreateDate" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_CreateDate">作成日時</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="datetime-local" id="CustomerMST00004_CreateDate" class="ctl w-sm ico-date" th:field="*{CustomerMST00004_CreateDate}" readonly="readonly"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_CreateDate')}" th:errors="*{CustomerMST00004_CreateDate}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_UpdateUserCD" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_UpdateUserCD">更新者</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="text" id="CustomerMST00004_UpdateUserCD" class="ctl w-sm" th:field="*{CustomerMST00004_UpdateUserCD}" readonly="readonly" autocomplete="off" maxlength="10"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_UpdateUserCD')}" th:errors="*{CustomerMST00004_UpdateUserCD}"></span>
-                        </div>
-                        <div data-node="v:Customer.MST00004_UpdateDate" class="field" style="--caption-width: 25%">
-                            <div class="controls">
-                                <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                    <label class="label-item" for="CustomerMST00004_UpdateDate">更新日時</label>
-                                </div>
-                                <div class="cell" style="flex: 1">
-                                    <input type="datetime-local" id="CustomerMST00004_UpdateDate" class="ctl w-sm ico-date" th:field="*{CustomerMST00004_UpdateDate}" readonly="readonly"/>
-                                </div>
-                            </div>
-                            <span class="error" th:if="${#fields.hasErrors('CustomerMST00004_UpdateDate')}" th:errors="*{CustomerMST00004_UpdateDate}"></span>
-                        </div>
+        <div data-node="n:TableMain" class="space-y-6">
+            <div data-node="n:Panel" class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <button type="submit" name="_event" value="btnReturn_Click" data-item="btnReturn" data-node="n:btnReturn"
+                                class="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-1">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                            一覧へ戻る
+                        </button>
+                        <span class="h-4 w-px bg-slate-200" aria-hidden="true"></span>
+                        <h2 class="text-base font-semibold text-slate-900">取引先情報</h2>
+                    </div>
+                    <span class="text-xs text-slate-400"><span class="text-red-500">*</span> は必須項目</span>
+                </div>
+                <fieldset data-node="v:Customer">
+                    <div class="grid grid-cols-1 gap-x-8 xl:grid-cols-2">
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_CustomerCD', '取引先コード', 'CustomerMST00004_CustomerCD', true, 10, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_CustomerInvoiceCD', '取引先請求コード', 'CustomerMST00004_CustomerInvoiceCD', null, 10, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldSelect('v:Customer.MST00004_CustomerKbn', '取引先区分', 'CustomerMST00004_CustomerKbn', ${CustomerMST00004_CustomerKbnItems}, true, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_CustomerNM', '取引先名', 'CustomerMST00004_CustomerNM', null, 100, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_CustomerOmission', '取引先略称', 'CustomerMST00004_CustomerOmission', null, 100, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_AreaCD', '地域コード', 'CustomerMST00004_AreaCD', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Address1', '住所1', 'CustomerMST00004_Address1', null, 100, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Address2', '住所2', 'CustomerMST00004_Address2', null, 100, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Address3', '住所3', 'CustomerMST00004_Address3', null, 100, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Tel', '電話番号', 'CustomerMST00004_Tel', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Fax', 'FAX', 'CustomerMST00004_Fax', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Zip', '郵便番号', 'CustomerMST00004_Zip', null, 200, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_FromPlaceCD', '発地コード', 'CustomerMST00004_FromPlaceCD', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_ToPlaceCD', '仕向地コード', 'CustomerMST00004_ToPlaceCD', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_PaymentTermsCD', '支払条件コード', 'CustomerMST00004_PaymentTermsCD', true, 20, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_DeliveryLocation', '納入場所', 'CustomerMST00004_DeliveryLocation', null, 200, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_TradeTermsCD', '取引条件コード', 'CustomerMST00004_TradeTermsCD', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_Currency', '通貨', 'CustomerMST00004_Currency', null, 20, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_SectionNM', '部署名', 'CustomerMST00004_SectionNM', null, 200, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_UserCD', '担当者名', 'CustomerMST00004_UserCD', null, 10, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_MailAddress', 'メールアドレス', 'CustomerMST00004_MailAddress', null, 50, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_TaxRoundKBN', '消費税端数処理区分', 'CustomerMST00004_TaxRoundKBN', null, 2, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_TaxCalcKBN', '税額通知区分', 'CustomerMST00004_TaxCalcKBN', null, 2, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_InvoiceCreateFlg', '請求書作成フラグ', 'CustomerMST00004_InvoiceCreateFlg', null, 1, null, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldSelect('v:Customer.MST00004_DelFlg', '削除フラグ', 'CustomerMST00004_DelFlg', ${CustomerMST00004_DelFlgItems}, null, true, true)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_CreateUserCD', '作成者', 'CustomerMST00004_CreateUserCD', null, 10, true, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldDateTime('v:Customer.MST00004_CreateDate', '作成日時', 'CustomerMST00004_CreateDate', null, true, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldText('v:Customer.MST00004_UpdateUserCD', '更新者', 'CustomerMST00004_UpdateUserCD', null, 10, true, null)}"></div>
+                        <div th:replace="~{parts/ui :: fieldDateTime('v:Customer.MST00004_UpdateDate', '更新日時', 'CustomerMST00004_UpdateDate', null, true, null)}"></div>
                     </div>
                 </fieldset>
-                <div data-node="n:buttonGroup1" class="panel button-group actions no-caption">
-                    <button type="submit" name="_event" value="btnOk_Click" data-item="btnOk" data-node="n:btnOk" class="btn" style="background: #2B579A; color: #fff; border-color: #2B579A">確定</button>
-                    <button type="button" data-item="btnCancel" data-node="n:btnCancel" class="btn">キャンセル</button>
+                <div data-node="n:buttonGroup1" class="mt-6 flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 pt-5">
+                    <button type="submit" name="_event" value="btnOk_Click" data-item="btnOk" data-node="n:btnOk" class="inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1">確定</button>
+                    <button type="button" data-item="btnCancel" data-node="n:btnCancel" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-300">キャンセル</button>
                 </div>
             </div>
         </div>
@@ -375,10 +88,9 @@
     </form>
 
     <!--/* ポップアップの画面（Popup の画面を Call で開いたとき）：Close で閉じる */-->
-    <div class="popup-overlay" th:if="${popup}"
-         style="position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4)">
-        <iframe class="popup-frame" th:src="@{${popup.url}}" th:title="${popup.screenId}"
-                th:style="|width: min(95vw, ${popup.width}); height: min(90vh, ${popup.height}); border: 0; border-radius: 6px; background: #fff; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)|"></iframe>
+    <div class="popup-overlay fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" th:if="${popup}">
+        <iframe class="popup-frame max-h-[90vh] w-full max-w-[95vw] rounded-xl border-0 bg-white shadow-2xl" th:src="@{${popup.url}}" th:title="${popup.screenId}"
+                th:style="|width: min(95vw, ${popup.width}); height: min(90vh, ${popup.height})|"></iframe>
     </div>
 
     <!--/* 画面の部分更新（自動生成）：送信を fetch で送り、返ってきた画面で main の中身を入れ替える（ちらつかない） */-->
@@ -563,6 +275,7 @@
           // 件数（折りたたんだときの 1 行）。Error があるときは開く
           function refresh(view) {
             const items = [...view.querySelectorAll('.message-item')];
+            view.classList.toggle('hidden', items.length === 0);
             const summary = view.querySelector('.message-summary');
             if (summary) summary.textContent = LEVELS.map(l => [l, items.filter(li => levelOf(li) === l).length]).filter(x => x[1] > 0).map(x => NAMES[x[0]] + ' ' + x[1] + ' 件').join('・');
             if (view.tagName === 'DETAILS' && items.some(li => levelOf(li) === 'Error')) view.open = true;
@@ -577,7 +290,12 @@
             const view = views().find(v => accepts(v, level));
             if (!view) return false;
             const li = document.createElement('li');
-            li.className = 'message-item message-' + level.toLowerCase();
+            li.className = 'message-item message-' + level.toLowerCase() + ' flex items-start gap-2 py-0.5 text-sm '
+              + (level === 'Error' ? 'text-red-600' : level === 'Warning' ? 'text-amber-600' : 'text-blue-600');
+            const icon = document.createElement('span');
+            icon.className = 'shrink-0';
+            icon.textContent = level === 'Error' ? '✖' : level === 'Warning' ? '⚠' : 'ℹ';
+            li.appendChild(icon);
             if (item) li.dataset.item = item;
             const span = document.createElement('span');
             span.className = 'message-text';
@@ -586,7 +304,7 @@
             const list = view.querySelector('.message-list');
             const next = [...list.children].find(c => LEVELS.indexOf(levelOf(c)) > LEVELS.indexOf(level));
             list.insertBefore(li, next || null);
-            view.classList.remove('message-closed');
+            view.classList.remove('hidden');
             refresh(view);
             autoHide(view, li);
             return true;
@@ -606,7 +324,7 @@
             // × で閉じる（次のメッセージで再び表示する）
             const close = e.target.closest('.message-close');
             if (close) {
-              close.closest('.message-view').classList.add('message-closed');
+              close.closest('.message-view').classList.add('hidden');
               return;
             }
             // 項目付きのメッセージ：その入力欄へ移動する
