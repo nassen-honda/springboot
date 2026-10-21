@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <!--/* 共通レイアウト部品（Tailwind CSS）
        各画面は layout(title, content) を th:replace で呼び出して全体を構成する。
-       スタイルシートは /css/app.css（Tailwind のビルド結果）のみ。 */-->
+       スタイルシートは /css/BaseStylesheet.css と /css/app.css。 */-->
 <html lang="ja" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title th:replace="${title}">タイトル</title>
+    <link rel="stylesheet" th:href="@{/css/BaseStylesheet.css}"/>
     <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <link rel="stylesheet" th:href="@{/css/Stylesheet.css}"/>
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-800">
     <header class="border-b border-slate-200 bg-white px-6 py-4">
