@@ -1,0 +1,33 @@
+/*
+ * CEM システムの Tailwind CSS 入力ファイル。
+ * 画面（Thymeleaf の .tpl）と補助スクリプトを走査して、使われている utility だけを app.css に出力する。
+ * ビルド： npm run css:build ／ 監視： npm run css:dev
+ */
+@import "tailwindcss";
+
+@source "../../resources/templates/**/*.tpl";
+@source "../../resources/static/js/**/*.js";
+
+@theme {
+    /* 日本語の業務画面で読みやすいフォント（Tailwind の font-sans を置き換える） */
+    --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", Meiryo,
+        ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@layer base {
+    body {
+        @apply min-h-full bg-slate-100 font-sans text-slate-800 antialiased;
+    }
+
+    /* 画面の部分更新（fetch）の送信中：操作できないことを示す */
+    html.screen-busy,
+    html.screen-busy * {
+        cursor: progress !important;
+    }
+
+    /* 一覧の列幅をドラッグしている間：文字の選択を止める */
+    body.col-resizing {
+        cursor: col-resize;
+        user-select: none;
+    }
+}

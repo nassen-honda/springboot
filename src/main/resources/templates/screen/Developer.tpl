@@ -7,38 +7,35 @@
     <title th:text="'開発メニュー'">開発メニュー</title>
 </head>
 <body>
-<main>
-    <h1 th:text="'開発メニュー'">開発メニュー</h1>
-
-    <style>table.data tbody tr.pg-off { display: none; } html.screen-busy, html.screen-busy * { cursor: progress !important; }</style>
-    <form th:action="@{/Developer}" th:object="${form}" method="post" data-enter-key="true">
+<main class="min-w-0 flex-1 overflow-auto p-6">
+    <h1 class="mx-auto mb-6 max-w-[1600px] text-2xl font-bold tracking-tight text-slate-900" th:text="'開発メニュー'">開発メニュー</h1>
+    <form class="mx-auto max-w-[1600px]" th:action="@{/Developer}" th:object="${form}" method="post" data-enter-key="true">
 
         <!--/* 画面項目（画面定義の「画面」タブの順・入れ子） */-->
-        <div data-node="n:TableMain" class="layout" style="width: 800px">
-            <div class="columns" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px 16px">
-                <details data-node="n:messageView" class="message-view no-caption" data-levels="Error,Warning,Info" data-clear-on-event="true" th:open="${messages.hasError}">
-                    <summary class="message-summary" th:text="${messages.summary}">メッセージ</summary>
-                    <ul class="message-list">
-                        <li class="message-item message-error" th:each="m : ${messages.error}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">エラーのメッセージ</span></li>
-                        <li class="message-item message-warning" th:each="m : ${messages.warning}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">警告のメッセージ</span></li>
-                        <li class="message-item message-info" th:each="m : ${messages.info}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">お知らせのメッセージ</span></li>
+        <div data-node="n:TableMain" class="space-y-6">
+            <div class="grid grid-cols-1 gap-4">
+                <details data-node="n:messageView" class="message-view relative mb-4 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm" th:classappend="${messages.empty} ? 'hidden'" data-levels="Error,Warning,Info" data-clear-on-event="true" th:open="${messages.hasError}">
+                    <summary class="message-summary cursor-pointer list-none select-none text-sm font-semibold text-slate-600 [&::-webkit-details-marker]:hidden" th:text="${messages.summary}">メッセージ</summary>
+                    <ul class="message-list mt-2 space-y-1">
+                        <li class="message-item message-error flex items-start gap-2 text-sm text-red-600" th:each="m : ${messages.error}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">✖</span><span class="message-text" th:text="${m.description}">エラーのメッセージ</span></li>
+                        <li class="message-item message-warning flex items-start gap-2 text-sm text-amber-600" th:each="m : ${messages.warning}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">⚠</span><span class="message-text" th:text="${m.description}">警告のメッセージ</span></li>
+                        <li class="message-item message-info flex items-start gap-2 text-sm text-blue-600" th:each="m : ${messages.info}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">ℹ</span><span class="message-text" th:text="${m.description}">お知らせのメッセージ</span></li>
                     </ul>
-                    <button type="button" class="message-close" title="閉じる">×</button>
+                    <button type="button" class="message-close absolute right-3 top-2.5 text-slate-400 transition hover:text-slate-600" title="閉じる">×</button>
                 </details>
             </div>
         </div>
 
         <!--/* 部品: 操作ボタン */-->
-        <div class="form-actions">
-            <button type="submit" class="btn">登録</button>
+        <div class="mt-6 flex items-center gap-3">
+            <button type="submit" class="inline-flex items-center justify-center gap-1.5 rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1">登録</button>
         </div>
     </form>
 
     <!--/* ポップアップの画面（Popup の画面を Call で開いたとき）：Close で閉じる */-->
-    <div class="popup-overlay" th:if="${popup}"
-         style="position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4)">
-        <iframe class="popup-frame" th:src="@{${popup.url}}" th:title="${popup.screenId}"
-                th:style="|width: min(95vw, ${popup.width}); height: min(90vh, ${popup.height}); border: 0; border-radius: 6px; background: #fff; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)|"></iframe>
+    <div class="popup-overlay fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" th:if="${popup}">
+        <iframe class="popup-frame max-h-[90vh] w-full max-w-[95vw] rounded-xl border-0 bg-white shadow-2xl" th:src="@{${popup.url}}" th:title="${popup.screenId}"
+                th:style="|width: min(95vw, ${popup.width}); height: min(90vh, ${popup.height})|"></iframe>
     </div>
 
     <!--/* 画面の部分更新（自動生成）：送信を fetch で送り、返ってきた画面で main の中身を入れ替える（ちらつかない） */-->
@@ -254,7 +251,7 @@
             const max = Number(input.dataset.maxSize) * 1024 * 1024;
             if ([...input.files].some(f => f.size > max)) { window.alert(`ファイルは ${input.dataset.maxSize} MB までです。`); input.value = ''; }
           }));
-          // ポップアップ画面の 🔍 のボタン（.btn-popup）・和暦の 📅 のボタン（.wareki-picker）：入力欄の中にアイコン（BaseStylesheet の ico-search・ico-date）がある場合はボタンを隠し、
+          // ポップアップ画面の 🔍 のボタン（.btn-popup）・和暦の 📅 のボタン（.wareki-picker）：入力欄の中にアイコン（Tailwind の ico-search・ico-date）がある場合はボタンを隠し、
           // アイコン（入力欄の右端）のクリックでボタンを押す（🔍 は送信して Event 項目.Popup、📅 はカレンダー）。アイコンの上はマウスの形を指にする
           root.querySelectorAll('.btn-popup, .wareki-picker').forEach(button => {
             const input = button.parentElement && button.parentElement.querySelector(button.classList.contains('btn-popup') ? 'input.ico-search' : 'input.ico-date[data-wareki-text]');
@@ -267,7 +264,7 @@
             input.addEventListener('mousemove', e => input.style.cursor = onIcon(e) && !button.disabled ? 'pointer' : '');
             input.addEventListener('click', e => { if (onIcon(e) && !button.disabled) button.click(); });
           });
-          // 一覧（BaseStylesheet の table.data）：縞模様（表示中の行に 1 行おきに alt）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
+          // 一覧（Tailwind の table.data）：縞模様（表示中の行に 1 行おきに alt）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
           // 並べ替え（th.sortable。sort-asc / sort-desc）、列の幅の変更（.col-resizer）、表示中の行をまとめて選ぶ（data-check-all）
           root.querySelectorAll('table[data-grid]').forEach(table => {
             const body = table.tBodies[0];
@@ -282,10 +279,14 @@
             const showSize = showPages && table.dataset.pagerPageSize !== 'false';
             let page = 0;
             let pager = null;
-            const stripe = () => rows().filter(r => r.style.display !== 'none').forEach((r, i) => r.classList.toggle('alt', i % 2 === 1));
+            const stripe = () => rows().filter(r => r.style.display !== 'none').forEach((r, i) => r.classList.toggle('bg-slate-50', i % 2 === 1));
             const link = (text, to, css) => {
               const a = document.createElement('a');
-              a.className = 'pg' + (css ? ' ' + css : '');
+              a.className = 'pg ' + (css ? css + ' ' : '')
+                + (css === 'active' ? 'inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-blue-600 bg-blue-600 px-2 text-sm font-semibold text-white'
+                  : css === 'disabled' ? 'pointer-events-none inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-2 text-sm text-slate-300'
+                  : css === 'dots' ? 'inline-flex h-8 min-w-8 cursor-default items-center justify-center px-2 text-sm text-slate-400'
+                  : 'inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-slate-300 bg-white px-2 text-sm text-slate-700 transition hover:border-blue-500 hover:text-blue-600');
               a.textContent = text;
               a.dataset.page = to;
               return a;
@@ -293,7 +294,7 @@
             const show = () => {
               const all = rows();
               // 最初のページ以外の行（サーバーで隠した行 pg-off）は、ここで表示・非表示を決める
-              all.forEach(r => r.classList.remove('pg-off'));
+              all.forEach(r => r.classList.remove('hidden'));
               // SEQ（td.seq）：並べ替えた後も上から 1, 2, …（data-row の行番号は変えない）
               all.forEach((r, i) => { const seq = r.querySelector('td.seq'); if (seq) seq.textContent = i + 1; });
               if (pager && showTotal) pager.querySelector('.total span').textContent = all.length;
@@ -319,12 +320,12 @@
             };
             if (showTotal || size) {
               pager = document.createElement('div');
-              pager.className = 'pager';
+              pager.className = 'pager flex flex-wrap items-center justify-end gap-1.5 px-3 py-3';
               // 件数がない場合も、表示件数の選択・ページ番号は右に寄せる（.total の margin-right: auto の代わり）
-              pager.innerHTML = showTotal ? '<span class="total">件数：<span></span></span>' : '<span class="total"></span>';
+              pager.innerHTML = showTotal ? '<span class="total mr-auto text-sm text-slate-600">件数：<span></span></span>' : '<span class="total mr-auto"></span>';
               if (showSize) {
                 if (!sizes.includes(size)) sizes.unshift(size);
-                pager.insertAdjacentHTML('beforeend', '<select class="ctl sel page-size">'
+                pager.insertAdjacentHTML('beforeend', '<select class="page-size mr-2 h-8 w-32 rounded-md border border-slate-300 bg-white px-2 text-sm text-slate-700">'
                   + sizes.map(s => '<option value="' + s + '"' + (s === size ? ' selected' : '') + '>' + s + '件/ページ</option>').join('') + '</select>');
                 pager.querySelector('select').addEventListener('change', e => { size = Number(e.target.value); page = 0; show(); });
               }
@@ -345,8 +346,12 @@
                   // 幅を変えた直後のクリック・取っ手のクリックは並べ替えない
                   if (e.target.closest('.col-resizer') || table.dataset.resized) return;
                   const asc = !th.classList.contains('sort-asc');
-                  heads.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+                  heads.forEach(h => {
+                    h.classList.remove('sort-asc', 'sort-desc');
+                    h.querySelector('.sort-indicator')?.remove();
+                  });
                   th.classList.add(asc ? 'sort-asc' : 'sort-desc');
+                  th.insertAdjacentHTML('beforeend', '<span class="sort-indicator ml-1 text-[10px] text-blue-600" aria-hidden="true">' + (asc ? '▲' : '▼') + '</span>');
                   const sorted = rows().sort((a, b) => {
                     const x = a.cells[index].textContent.trim(), y = b.cells[index].textContent.trim();
                     const nx = Number(x.replace(/,/g, '')), ny = Number(y.replace(/,/g, ''));
@@ -402,6 +407,7 @@
           // 件数（折りたたんだときの 1 行）。Error があるときは開く
           function refresh(view) {
             const items = [...view.querySelectorAll('.message-item')];
+            view.classList.toggle('hidden', items.length === 0);
             const summary = view.querySelector('.message-summary');
             if (summary) summary.textContent = LEVELS.map(l => [l, items.filter(li => levelOf(li) === l).length]).filter(x => x[1] > 0).map(x => NAMES[x[0]] + ' ' + x[1] + ' 件').join('・');
             if (view.tagName === 'DETAILS' && items.some(li => levelOf(li) === 'Error')) view.open = true;
@@ -416,7 +422,12 @@
             const view = views().find(v => accepts(v, level));
             if (!view) return false;
             const li = document.createElement('li');
-            li.className = 'message-item message-' + level.toLowerCase();
+            li.className = 'message-item message-' + level.toLowerCase() + ' flex items-start gap-2 py-0.5 text-sm '
+              + (level === 'Error' ? 'text-red-600' : level === 'Warning' ? 'text-amber-600' : 'text-blue-600');
+            const icon = document.createElement('span');
+            icon.className = 'shrink-0';
+            icon.textContent = level === 'Error' ? '✖' : level === 'Warning' ? '⚠' : 'ℹ';
+            li.appendChild(icon);
             if (item) li.dataset.item = item;
             const span = document.createElement('span');
             span.className = 'message-text';
@@ -425,7 +436,7 @@
             const list = view.querySelector('.message-list');
             const next = [...list.children].find(c => LEVELS.indexOf(levelOf(c)) > LEVELS.indexOf(level));
             list.insertBefore(li, next || null);
-            view.classList.remove('message-closed');
+            view.classList.remove('hidden');
             refresh(view);
             autoHide(view, li);
             return true;
@@ -445,7 +456,7 @@
             // × で閉じる（次のメッセージで再び表示する）
             const close = e.target.closest('.message-close');
             if (close) {
-              close.closest('.message-view').classList.add('message-closed');
+              close.closest('.message-view').classList.add('hidden');
               return;
             }
             // 項目付きのメッセージ：その入力欄へ移動する
