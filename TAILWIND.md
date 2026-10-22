@@ -718,6 +718,46 @@ Cannot resolve fragment. Signature "fieldText (...)" declares parameter "require
 - `th` 加 `sortable` 后 JS 才绑定点击；排序箭头由 JS 插入 `<span class="sort-indicator ml-1 text-[10px] text-blue-600">▲/▼</span>`。
 - 列宽拖拽手柄是 `th .col-resizer`（当前模板未生成手柄；如启用，需同时保留 `col-resizing` 的 body class，样式可再补一个 `cursor-col-resize select-none`）。
 
+### 9.7 搜索条件列数（生成器设置）
+
+搜索条件面板的列数由生成器的画面设置决定，模板不能写死 2 列。
+
+设置 = 3 时：
+
+```html
+<div data-node="n:panel1"
+     class="grid grid-cols-1 gap-x-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm xl:grid-cols-3">
+    <div class="mb-1 flex items-center justify-between xl:col-span-3">
+        <h2 class="text-sm font-semibold text-slate-700">検索条件</h2>
+    </div>
+
+    <!-- 直下の項目 -->
+    <div th:replace="~{parts/field :: fieldText(...)}"></div>
+    <div th:replace="~{parts/field :: fieldText(...)}"></div>
+    <div th:replace="~{parts/field :: fieldText(...)}"></div>
+
+    <!-- 入れ子グループ -->
+    <div data-node="n:table1" class="mt-2 grid grid-cols-1 gap-x-8 xl:col-span-3 xl:grid-cols-3">...</div>
+
+    <!-- ボタン行 -->
+    <div data-node="n:buttonGroup2" class="... xl:col-span-3">...</div>
+</div>
+```
+
+列数マップ（完全な class を出力する）:
+
+| 设置 | コンテナ | 見出し / ボタン / 入れ子 |
+|---|---|---|
+| 1 | `xl:grid-cols-1` | `xl:col-span-1` |
+| 2 | `xl:grid-cols-2` | `xl:col-span-2` |
+| 3 | `xl:grid-cols-3` | `xl:col-span-3` |
+| 4 | `xl:grid-cols-4` | `xl:col-span-4` |
+
+- `grid-cols-${n}` は不可（Tailwind が生成しない）。
+- 1280px 未満は 1 列（`grid-cols-1`）。
+- 入れ子グループ・見出し・ボタン行の `col-span` を忘れると、3 列にならない。
+- 旧生成結果は `class="panel"` + 堆積した `field` で、列数設定自体が出力されていなかった。
+
 ---
 
 ## 10. MessageView

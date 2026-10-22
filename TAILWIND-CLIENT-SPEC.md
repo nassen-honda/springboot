@@ -126,6 +126,55 @@
 
 ## 7. 列表、空状态、分页
 
+### 7.1 搜索条件列数必须按生成器设置输出
+
+生成器里设置“搜索条件每行 3 列”时，模板必须真的输出 3 列。当前项目列表页的写法：
+
+```html
+<div data-node="n:panel1"
+     class="grid grid-cols-1 gap-x-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm xl:grid-cols-3">
+
+    <div class="mb-1 flex items-center justify-between xl:col-span-3">
+        <h2 class="text-sm font-semibold text-slate-700">検索条件</h2>
+    </div>
+
+    <!-- 直下の検索項目：3 列 -->
+    <div th:replace="~{parts/field :: fieldText('v:CustomerCD', '取引先コード', 'CustomerCD', null, 10, null, null)}"></div>
+    <div th:replace="~{parts/field :: fieldText('v:CustomerNM', '取引先名', 'CustomerNM', null, 100, null, null)}"></div>
+    <div th:replace="~{parts/field :: fieldText('v:CustomerOmission', '取引先略称', 'CustomerOmission', null, 100, null, null)}"></div>
+
+    <!-- 入れ子の検索グループも 3 列で、親の 3 列分を占有 -->
+    <div data-node="n:table1" class="mt-2 grid grid-cols-1 gap-x-8 xl:col-span-3 xl:grid-cols-3">
+        ...
+    </div>
+
+    <!-- ボタン行は 3 列分を占有 -->
+    <div data-node="n:buttonGroup2" class="... xl:col-span-3">
+        ...
+    </div>
+</div>
+```
+
+生成器の列数設定 → 出力する class（**必ず完全な class 名で**）:
+
+| 设置 | コンテナ | 見出し / ボタン / 入れ子グループ |
+|---|---|---|
+| 1 列 | `xl:grid-cols-1` | `xl:col-span-1` |
+| 2 列 | `xl:grid-cols-2` | `xl:col-span-2` |
+| 3 列 | `xl:grid-cols-3` | `xl:col-span-3` |
+| 4 列 | `xl:grid-cols-4` | `xl:col-span-4` |
+
+规则：
+
+- 不要写 `grid-cols-${columns}` 这样的动态拼接；Tailwind 不会生成对应 CSS。生成器内部用 **map** 输出完整 class。
+- `xl` 断点（≥1280px）才切 3 列；小于 `xl` 保持 1 列，避免标签 9rem + 输入框被压得过窄。
+- 嵌套的搜索组（`n:table1`）和按钮组必须加 `xl:col-span-{columns}`，否则会掉到下一行、看起来“不是每行三个”。
+- 页面头部的 `検索条件` 标题也要 `xl:col-span-{columns}`。
+- 验证：浏览器宽度 ≥1280 时，搜索卡片内每行正好 3 个字段；`getComputedStyle(panel).gridTemplateColumns` 应返回 3 个轨道。
+
+> 本次生成器输出里，旧模板是 `class="panel"` + 堆叠 `field`（完全没有 grid）；恢复的 Tailwind 模板又硬编码了 `xl:grid-cols-2`。两者都没有读取“3 列”设置，所以页面看起来不是 3 列。
+
+
 ```html
 <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">

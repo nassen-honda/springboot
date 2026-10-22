@@ -239,11 +239,84 @@ com.nassen.cem.script.ScriptDb$DbException: データがありません。
 
 ---
 
+### 4.6 搜索条件每行 3 列的设置没有生效
+
+**生成器设置**：页面「検索条件」部分每行 3 列。
+
+**实际生成**：
+
+- 旧模板输出的是：
+
+```html
+<div data-node="n:panel1" class="panel no-caption font-set" style="background-color: #FFFFFF">
+    <div data-node="v:CustomerCD" class="field" style="--caption-width: 25%">...</div>
+    <div data-node="v:CustomerNM" class="field" style="--caption-width: 25%">...</div>
+    ...
+</div>
+```
+
+`panel` 只是普通块，字段全部纵向堆叠，**没有任何 grid / 列数输出**。
+
+- 恢复的 Tailwind 模板又硬编码成 2 列：
+
+```html
+<div data-node="n:panel1" class="grid ... xl:grid-cols-2">
+    <div class="... xl:col-span-2">検索条件</div>
+    ...
+    <div data-node="n:table1" class="... xl:col-span-2 xl:grid-cols-2">...</div>
+    <div data-node="n:buttonGroup2" class="... xl:col-span-2">...</div>
+</div>
+```
+
+结果：在 1280px 以上只显示 2 个字段/行，和生成器设置的 3 列不一致。
+
+**正确输出（设置 = 3）**：
+
+```html
+<div data-node="n:panel1"
+     class="grid grid-cols-1 gap-x-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm xl:grid-cols-3">
+
+    <div class="mb-1 flex items-center justify-between xl:col-span-3">
+        <h2 class="text-sm font-semibold text-slate-700">検索条件</h2>
+    </div>
+
+    <!-- 直下の検索項目：3 列 -->
+    <div th:replace="~{parts/field :: fieldText(...)}"></div>
+    <div th:replace="~{parts/field :: fieldText(...)}"></div>
+    <div th:replace="~{parts/field :: fieldText(...)}"></div>
+
+    <!-- 入れ子グループ：親の 3 列分を占有し、中も 3 列 -->
+    <div data-node="n:table1" class="mt-2 grid grid-cols-1 gap-x-8 xl:col-span-3 xl:grid-cols-3">...</div>
+
+    <!-- ボタン行：3 列分 -->
+    <div data-node="n:buttonGroup2" class="... xl:col-span-3">...</div>
+</div>
+```
+
+**生成器必须做**：
+
+1. 从画面设置读取列数（这里是 3），不要写死 2。
+2. 用完整 class 的映射输出，不能 `grid-cols-${n}`：
+
+| 设置 | 容器 | 标题 / 按钮 / 嵌套组 |
+|---|---|---|
+| 1 | `xl:grid-cols-1` | `xl:col-span-1` |
+| 2 | `xl:grid-cols-2` | `xl:col-span-2` |
+| 3 | `xl:grid-cols-3` | `xl:col-span-3` |
+| 4 | `xl:grid-cols-4` | `xl:col-span-4` |
+
+3. 嵌套组（`n:table1`）、`検索条件` 标题、按钮组都要 `xl:col-span-{n}`；否则会掉行，看起来不是每行 3 个。
+4. 1280px 以下保持 1 列，避免 9rem 标签 + 输入框被压扁。
+5. 验收：1280px 以上 `getComputedStyle(panel).gridTemplateColumns` 返回 3 个轨道。
+
+> 这个问题说明：**生成器设置只是数据，模板不读取就永远不会生效**。旧模板完全没有输出 grid；恢复的模板又写死了 2 列。两处都必须改。
+
+
 ## 5. 页面影响矩阵
 
 | 页面 | 生成后的表现 | 原因 |
 |---|---|---|
-| `/CustomerMasterList` | 仍能显示，但是旧 Element Plus 风格，不是 Tailwind | 旧 `BaseStylesheet.css` 覆盖；`app.css` 未加载 |
+| `/CustomerMasterList` | 仍能显示，但是旧 Element Plus 风格；搜索条件不是设置的 3 列/行 | 旧 CSS 覆盖；`app.css` 未加载；模板没有输出列数设置 |
 | `/CustomerMasterDetail` | 从列表进入能显示旧样式；直接打开 500 | `load(..., true)` 无数据抛异常 |
 | `/UserPopup` | 旧样式，弹窗内容不是 Tailwind | 旧 CSS / 旧 class |
 | `/Developer` | macOS 可能 200，Linux / CI 500 | `developer.tpl` vs `screen/Developer` |
@@ -344,7 +417,16 @@ server.servlet.session.tracking-modes=cookie
 - `TAILWIND-CLIENT-SPEC.md`
 - `TAILWIND-GENERATOR-REGRESSION-REPORT.md`（本文件）
 
-### 6.9 构建与提交
+### 6.9 搜索条件列数
+
+按 `4.6` 的映射输出：
+
+- 容器：`xl:grid-cols-{n}`
+- 标题 / 按钮 / 嵌套组：`xl:col-span-{n}`
+- 嵌套组内部：`xl:grid-cols-{n}`
+- 必须用完整 class 的 map，不能动态拼接
+
+### 6.10 构建与提交
 
 ```bash
 cd ../cem-tailwind-build
@@ -418,6 +500,7 @@ done
 - `DeveloperController.VIEW = "screen/developer"`，与生成器 lowercase 文件名一致
 - 恢复 `server.servlet.session.tracking-modes=cookie`
 - 在 `TAILWIND-CLIENT-SPEC.md` 增加本报告的检查清单
+- 列表搜索条件从 2 列修正为生成器设置的 **3 列/行**（`xl:grid-cols-3` + `xl:col-span-3`）
 
 修复后：
 

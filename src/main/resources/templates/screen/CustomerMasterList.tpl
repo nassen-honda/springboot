@@ -27,14 +27,14 @@
 
         <!--/* 画面項目（画面定義の「画面」タブの順・入れ子） */-->
         <div data-node="n:TableMain" class="space-y-6">
-            <div data-node="n:panel1" class="grid grid-cols-1 gap-x-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm xl:grid-cols-2">
-                <div class="mb-1 flex items-center justify-between xl:col-span-2">
+            <div data-node="n:panel1" class="grid grid-cols-1 gap-x-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm xl:grid-cols-3">
+                <div class="mb-1 flex items-center justify-between xl:col-span-3">
                     <h2 class="text-sm font-semibold text-slate-700">検索条件</h2>
                 </div>
                 <div th:replace="~{parts/field :: fieldText('v:CustomerCD', '取引先コード', 'CustomerCD', null, 10, null, null)}"></div>
                 <div th:replace="~{parts/field :: fieldText('v:CustomerNM', '取引先名', 'CustomerNM', null, 100, null, null)}"></div>
                 <div th:replace="~{parts/field :: fieldText('v:CustomerOmission', '取引先略称', 'CustomerOmission', null, 100, null, null)}"></div>
-                <div data-node="n:table1" class="mt-2 grid grid-cols-1 gap-x-8 xl:col-span-2 xl:grid-cols-2">
+                <div data-node="n:table1" class="mt-2 grid grid-cols-1 gap-x-8 xl:col-span-3 xl:grid-cols-3">
                     <div data-node="v:UserCD" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
                         <div class="contents">
                             <div class="flex min-h-9 items-center justify-end gap-1">
@@ -68,7 +68,7 @@
                     </div>
                     <div th:replace="~{parts/field :: fieldSelect('v:CustomerKbn', '取引先区分', 'CustomerKbn', ${CustomerKbnItems}, null, true, null)}"></div>
                 </div>
-                <div data-node="n:buttonGroup2" class="mt-2 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-5 xl:col-span-2">
+                <div data-node="n:buttonGroup2" class="mt-2 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-5 xl:col-span-3">
                     <button type="submit" name="_event" value="btnSearch1_Click" data-item="btnSearch1" data-node="n:btnSearch1" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500"><span class='icon'><svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M11.2 7A4.2 4.2 0 1 1 2.8 7a4.2 4.2 0 1 1 8.4 0z M10.4 10.4L14 14'/></svg></span>検索</button>
                     <button type="submit" name="_event" value="btnClear1_Click" data-item="btnClear1" data-node="n:btnClear1" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-300"><span class='icon'><svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M13 8a5 5 0 1 1-1.5-3.5 M13 2.5v3h-3'/></svg></span>クリア</button>
                 </div>
