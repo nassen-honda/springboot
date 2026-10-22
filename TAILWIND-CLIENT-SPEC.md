@@ -1,5 +1,7 @@
 # 生成器客户端用 Tailwind CSS 规范
 
+> 本次回归问题与修复要求：`TAILWIND-GENERATOR-REGRESSION-REPORT.md`（同目录）。
+
 本文件是给**代码生成器客户端**的落地规范：生成页面时按这里的结构、class 和 fragment 输出。
 详细移植说明见同目录 `TAILWIND.md`；本文件是精简执行版。
 

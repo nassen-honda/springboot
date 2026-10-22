@@ -1,5 +1,7 @@
 # Tailwind CSS 规范（CEM システム / 生成器模板移植版）
 
+> 本次生成器回归问题与修复要求：`TAILWIND-GENERATOR-REGRESSION-REPORT.md`（同目录）。
+
 本文档是当前项目（Spring Boot + Thymeleaf）前端样式的**唯一规范**，用于把现有实现移植到代码生成器的模板中。
 目标：不写任何自定义 CSS，画面全部由 Tailwind CSS v4 的 utility class 构成；公共布局、表单、表格、消息、弹窗统一。
 
