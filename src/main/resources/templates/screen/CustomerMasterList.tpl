@@ -7,159 +7,125 @@
     <title th:text="'取引先マスタ一覧'">取引先マスタ一覧</title>
 </head>
 <body>
-<main>
-    <style>
-        .font-set input, .font-set select, .font-set textarea { font: inherit; color: inherit; text-decoration: inherit; }
-        .back-input input, .back-input select, .back-input textarea { background-color: var(--item-back); }
-    </style>
-    <h1 th:text="'取引先マスタ一覧'">取引先マスタ一覧</h1>
-
-    <style>table.data tbody tr.pg-off { display: none; } html.screen-busy, html.screen-busy * { cursor: progress !important; }</style>
-    <form th:action="@{/CustomerMasterList}" th:object="${form}" method="post">
+<main class="min-w-0 flex-1 overflow-auto p-4 sm:p-6">
+    <div class="mx-auto mb-6 flex max-w-[1600px] flex-wrap items-end justify-between gap-4">
+        <div th:replace="~{parts/field :: pageHeader('取引先マスタ一覧', '取引先の検索・登録・編集を行います。')}"></div>
+        <div class="flex flex-wrap items-center gap-2">
+            <button type="button" data-item="btnNew1" data-node="n:btnNew1"
+                    class="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                新規作成
+            </button>
+            <button type="button" data-item="btnExport1" data-node="n:btnExport1"
+                    class="inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-1">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></svg>
+                CSV 出力
+            </button>
+        </div>
+    </div>
+    <form class="mx-auto max-w-[1600px]" th:action="@{/CustomerMasterList}" th:object="${form}" method="post">
 
         <!--/* 画面項目（画面定義の「画面」タブの順・入れ子） */-->
-        <div data-node="n:TableMain" class="layout" style="width: 2400px">
-            <div data-node="n:panel1" class="panel no-caption font-set" style="background-color: #FFFFFF">
-                <div data-node="v:CustomerCD" class="field" style="--caption-width: 25%">
-                    <div class="controls">
-                        <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                            <label class="label-item" for="CustomerCD">取引先コード</label>
-                        </div>
-                        <div class="cell" style="flex: 1">
-                            <input type="text" id="CustomerCD" class="ctl w-sm" th:field="*{CustomerCD}" autocomplete="off" maxlength="10"/>
-                        </div>
-                    </div>
-                    <span class="error" th:if="${#fields.hasErrors('CustomerCD')}" th:errors="*{CustomerCD}"></span>
+        <div data-node="n:TableMain" class="space-y-6">
+            <div data-node="n:panel1" class="grid grid-cols-1 gap-x-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm xl:grid-cols-2">
+                <div class="mb-1 flex items-center justify-between xl:col-span-2">
+                    <h2 class="text-sm font-semibold text-slate-700">検索条件</h2>
                 </div>
-                <div data-node="v:CustomerNM" class="field" style="--caption-width: 25%">
-                    <div class="controls">
-                        <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                            <label class="label-item" for="CustomerNM">取引先名</label>
+                <div th:replace="~{parts/field :: fieldText('v:CustomerCD', '取引先コード', 'CustomerCD', null, 10, null, null)}"></div>
+                <div th:replace="~{parts/field :: fieldText('v:CustomerNM', '取引先名', 'CustomerNM', null, 100, null, null)}"></div>
+                <div th:replace="~{parts/field :: fieldText('v:CustomerOmission', '取引先略称', 'CustomerOmission', null, 100, null, null)}"></div>
+                <div data-node="n:table1" class="mt-2 grid grid-cols-1 gap-x-8 xl:col-span-2 xl:grid-cols-2">
+                    <div data-node="v:UserCD" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
+                        <div class="contents">
+                            <div class="flex min-h-9 items-center justify-end gap-1">
+                                <label class="text-sm font-medium text-slate-700" for="UserCD">ユーザコード</label>
+                            </div>
+                            <div class="flex min-w-0 max-w-sm items-center gap-2">
+                                <div class="relative w-full">
+                                    <input type="text" id="UserCD" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400 !pr-10 ico-search" th:field="*{UserCD}" autocomplete="off" maxlength="10"/>
+                                    <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.2"/><path d="M10.4 10.4L14 14"/></svg>
+                                </div>
+                                <button type="submit" name="_event" value="UserCD_Popup" class="btn-popup hidden" formnovalidate="formnovalidate" title="ユーザ選択画面">🔍</button>
+                            </div>
                         </div>
-                        <div class="cell" style="flex: 1">
-                            <input type="text" id="CustomerNM" class="ctl w-sm" th:field="*{CustomerNM}" autocomplete="off" maxlength="100"/>
-                        </div>
+                        <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('UserCD')}" th:errors="*{UserCD}"></span>
                     </div>
-                    <span class="error" th:if="${#fields.hasErrors('CustomerNM')}" th:errors="*{CustomerNM}"></span>
-                </div>
-                <div data-node="v:CustomerOmission" class="field" style="--caption-width: 25%">
-                    <div class="controls">
-                        <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                            <label class="label-item" for="CustomerOmission">取引先略称</label>
-                        </div>
-                        <div class="cell" style="flex: 1">
-                            <input type="text" id="CustomerOmission" class="ctl w-sm" th:field="*{CustomerOmission}" autocomplete="off" maxlength="100"/>
-                        </div>
-                    </div>
-                    <span class="error" th:if="${#fields.hasErrors('CustomerOmission')}" th:errors="*{CustomerOmission}"></span>
-                </div>
-                <div data-node="n:table1" class="layout">
-                    <div data-node="v:UserCD" class="field" style="--caption-width: 25%">
-                        <div class="controls">
-                            <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                <label class="label-item" for="UserCD">ユーザコード</label>
+                    <div th:replace="~{parts/field :: fieldText('v:UserName', 'ユーザ名', 'UserName', null, 50, null, null)}"></div>
+                    <div data-node="v:CreateDate" class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
+                        <div class="contents">
+                            <div class="flex min-h-9 items-center justify-end gap-1">
+                                <label class="text-sm font-medium text-slate-700" for="CreateDate-wareki">日付</label>
                             </div>
-                            <div class="cell" style="flex: 1">
-                                <input type="text" id="UserCD" class="ctl w-sm ico-search" th:field="*{UserCD}" autocomplete="off" maxlength="10"/>
-                                <button type="submit" name="_event" value="UserCD_Popup" class="btn-popup" formnovalidate="formnovalidate" title="ユーザ選択画面" style="display: none">🔍</button>
-                            </div>
-                        </div>
-                        <span class="error" th:if="${#fields.hasErrors('UserCD')}" th:errors="*{UserCD}"></span>
-                    </div>
-                    <div data-node="v:UserName" class="field" style="--caption-width: 25%">
-                        <div class="controls">
-                            <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                <label class="label-item" for="UserName">ユーザ名</label>
-                            </div>
-                            <div class="cell" style="flex: 1">
-                                <input type="text" id="UserName" class="ctl w-sm" th:field="*{UserName}" autocomplete="off" maxlength="50"/>
-                            </div>
-                        </div>
-                        <span class="error" th:if="${#fields.hasErrors('UserName')}" th:errors="*{UserName}"></span>
-                    </div>
-                    <div data-node="v:CreateDate" class="field" style="--caption-width: 25%">
-                        <div class="controls">
-                            <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                <label class="label-item" for="CreateDate-wareki">日付</label>
-                            </div>
-                            <div class="cell wareki" style="flex: 1; position: relative">
-                                <input type="text" id="CreateDate-wareki" class="ctl w-sm ico-date" data-wareki-text="date" th:value="${form.viewState.wareki(form.CreateDate)}" placeholder="例: R7.10.17" autocomplete="off"/>
+                            <div class="relative flex min-w-0 max-w-sm items-center gap-2">
+                                <input type="text" id="CreateDate-wareki" class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400 !pr-10 ico-date" data-wareki-text="date" th:value="${form.viewState.wareki(form.CreateDate)}" placeholder="例: R7.10.17" autocomplete="off"/>
+                                <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.6v2.6M10.5 1.6v2.6"/></svg>
                                 <button type="button" class="wareki-picker" data-wareki-picker="CreateDate" title="カレンダーから選ぶ" tabindex="-1" style="display: none">📅</button>
-                                <input type="date" id="CreateDate" class="wareki-native" th:field="*{CreateDate}" tabindex="-1"
-                                       style="position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; pointer-events: none"/>
+                                <input type="date" id="CreateDate" th:field="*{CreateDate}" tabindex="-1"
+                                       class="wareki-native pointer-events-none absolute bottom-0 left-0 h-px w-px border-0 p-0 opacity-0"/>
                             </div>
                         </div>
-                        <span class="error" th:if="${#fields.hasErrors('CreateDate')}" th:errors="*{CreateDate}"></span>
+                        <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('CreateDate')}" th:errors="*{CreateDate}"></span>
                     </div>
-                    <div data-node="v:CustomerKbn" class="field" style="--caption-width: 25%">
-                        <div class="controls">
-                            <div class="label-cell" style="width: var(--caption-width, 25%); flex: none; display: flex; align-items: center; justify-content: space-between">
-                                <label class="label-item" for="CustomerKbn">取引先区分</label>
-                            </div>
-                            <div class="cell" style="flex: 1">
-                                <select id="CustomerKbn" class="ctl sel w-sm" th:field="*{CustomerKbn}">
-                                    <option value=""></option>
-                                    <option th:each="item : ${CustomerKbnItems}" th:value="${item.key}" th:text="${item.value}">項目</option>
-                                </select>
-                            </div>
-                        </div>
-                        <span class="error" th:if="${#fields.hasErrors('CustomerKbn')}" th:errors="*{CustomerKbn}"></span>
-                    </div>
+                    <div th:replace="~{parts/field :: fieldSelect('v:CustomerKbn', '取引先区分', 'CustomerKbn', ${CustomerKbnItems}, null, true, null)}"></div>
                 </div>
-                <div data-node="n:buttonGroup2" class="panel button-group actions no-caption">
-                    <button type="submit" name="_event" value="btnSearch1_Click" data-item="btnSearch1" data-node="n:btnSearch1" class="btn btn-search"><span class='icon'><svg viewBox='0 0 16 16' width='1em' height='1em' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true' style='vertical-align: -0.125em; margin-right: 0.4em'><path d='M11.2 7A4.2 4.2 0 1 1 2.8 7a4.2 4.2 0 1 1 8.4 0z M10.4 10.4L14 14'/></svg></span>検索</button>
-                    <button type="submit" name="_event" value="btnClear1_Click" data-item="btnClear1" data-node="n:btnClear1" class="btn btn-clear"><span class='icon'><svg viewBox='0 0 16 16' width='1em' height='1em' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true' style='vertical-align: -0.125em; margin-right: 0.4em'><path d='M13 8a5 5 0 1 1-1.5-3.5 M13 2.5v3h-3'/></svg></span>クリア</button>
-                    <button type="button" data-item="btnNew1" data-node="n:btnNew1" class="btn btn-new">新規作成</button>
-                    <button type="button" data-item="btnExport1" data-node="n:btnExport1" class="btn btn-csv">Export</button>
+                <div data-node="n:buttonGroup2" class="mt-2 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-5 xl:col-span-2">
+                    <button type="submit" name="_event" value="btnSearch1_Click" data-item="btnSearch1" data-node="n:btnSearch1" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500"><span class='icon'><svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M11.2 7A4.2 4.2 0 1 1 2.8 7a4.2 4.2 0 1 1 8.4 0z M10.4 10.4L14 14'/></svg></span>検索</button>
+                    <button type="submit" name="_event" value="btnClear1_Click" data-item="btnClear1" data-node="n:btnClear1" class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-300"><span class='icon'><svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M13 8a5 5 0 1 1-1.5-3.5 M13 2.5v3h-3'/></svg></span>クリア</button>
                 </div>
             </div>
-            <details data-node="n:messageView" class="message-view" data-levels="Error,Warning,Info" data-clear-on-event="true" th:open="${messages.hasError}">
-                <summary class="message-summary" th:text="${messages.summary}">メッセージ</summary>
-                <div class="message-caption">メッセージ</div>
-                <ul class="message-list">
-                    <li class="message-item message-error" th:each="m : ${messages.error}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">エラーのメッセージ</span></li>
-                    <li class="message-item message-warning" th:each="m : ${messages.warning}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">警告のメッセージ</span></li>
-                    <li class="message-item message-info" th:each="m : ${messages.info}" th:attr="data-item=${m.item}"><span class="message-text" th:text="${m.description}">お知らせのメッセージ</span></li>
+            <details data-node="n:messageView" class="message-view relative mb-4 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm" th:classappend="${messages.empty} ? 'hidden'" data-levels="Error,Warning,Info" data-clear-on-event="true" th:open="${messages.hasError}">
+                <summary class="message-summary cursor-pointer list-none select-none text-sm font-semibold text-slate-600 [&::-webkit-details-marker]:hidden" th:text="${messages.summary}">メッセージ</summary>
+                <ul class="message-list mt-2 space-y-1">
+                    <li class="message-item message-error flex items-start gap-2 text-sm text-red-600" th:each="m : ${messages.error}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">✖</span><span class="message-text" th:text="${m.description}">エラーのメッセージ</span></li>
+                    <li class="message-item message-warning flex items-start gap-2 text-sm text-amber-600" th:each="m : ${messages.warning}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">⚠</span><span class="message-text" th:text="${m.description}">警告のメッセージ</span></li>
+                    <li class="message-item message-info flex items-start gap-2 text-sm text-blue-600" th:each="m : ${messages.info}" th:attr="data-item=${m.item}"><span class="shrink-0" aria-hidden="true">ℹ</span><span class="message-text" th:text="${m.description}">お知らせのメッセージ</span></li>
                 </ul>
-                <button type="button" class="message-close" title="閉じる">×</button>
+                <button type="button" class="message-close absolute right-3 top-2.5 text-slate-400 transition hover:text-slate-600" title="閉じる">×</button>
             </details>
-            <div class="card">
-                <div class="table-scroll">
-                    <table data-node="v:Customers" class="data" data-grid="Customers" data-page-sizes="10,20,30,50">
+            <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
+                    <h2 class="text-sm font-semibold text-slate-700">検索結果</h2>
+                    <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600" th:text="${#lists.size(form.Customers)} + ' 件'">0 件</span>
+                </div>
+                <div class="table-scroll max-h-[60vh] overflow-auto">
+                    <table data-node="v:Customers" class="w-full min-w-[1200px] border-collapse text-sm" data-grid="Customers" data-page-sizes="10,20,30,50">
                         <thead>
                             <tr>
-                                <th data-node="n:SEQ" class="row-number a-center" data-nosort="true" style="width: 50px">No</th>
-                                <th data-node="v:Customers.MST00004_CustomerCD" class="a-left">取引先コード</th>
-                                <th data-node="v:Customers.MST00004_CustomerInvoiceCD" class="a-left">取引先請求コード</th>
-                                <th data-node="v:Customers.MST00004_CustomerKbn" class="a-left">取引先区分</th>
-                                <th data-node="v:Customers.MST00004_CustomerNM" class="a-left">取引先名</th>
-                                <th data-node="v:Customers.MST00004_CustomerOmission" class="a-left">取引先略称</th>
-                                <th data-node="v:Customers.MST00004_AreaCD" class="a-left">地域コード</th>
-                                <th data-node="v:Customers.MST00004_Address1" class="a-left">住所1</th>
-                                <th data-node="v:Customers.MST00004_Address2" class="a-left">住所2</th>
-                                <th data-node="v:Customers.MST00004_Address3" class="a-left">住所3</th>
-                                <th data-node="n:btnPanel1" class="cell-panel a-center" data-nosort="true">操作</th>
+                                <th data-node="n:SEQ" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500 w-12" data-nosort="true">No</th>
+                                <th data-node="v:Customers.MST00004_CustomerCD" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先コード</th>
+                                <th data-node="v:Customers.MST00004_CustomerInvoiceCD" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先請求コード</th>
+                                <th data-node="v:Customers.MST00004_CustomerKbn" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先区分</th>
+                                <th data-node="v:Customers.MST00004_CustomerNM" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先名</th>
+                                <th data-node="v:Customers.MST00004_CustomerOmission" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">取引先略称</th>
+                                <th data-node="v:Customers.MST00004_AreaCD" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">地域コード</th>
+                                <th data-node="v:Customers.MST00004_Address1" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">住所1</th>
+                                <th data-node="v:Customers.MST00004_Address2" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">住所2</th>
+                                <th data-node="v:Customers.MST00004_Address3" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500">住所3</th>
+                                <th data-node="n:btnPanel1" class="sticky top-0 z-10 whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs font-semibold tracking-wide text-slate-500" data-nosort="true">操作</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="row, st : *{Customers}" th:attr="data-row=${st.count}" class="rec-end" th:classappend="${(st.index &gt;= 10 ? 'pg-off' : (st.even ? 'alt' : ''))}">
-                                <td class="row-number a-center seq" data-node="n:SEQ" style="width: 50px" th:text="${st.count}">1</td>
-                                <td class="a-left" data-node="v:Customers.MST00004_CustomerCD" th:text="${row.mst00004CustomerCD}">－</td>
-                                <td class="a-left" data-node="v:Customers.MST00004_CustomerInvoiceCD" th:text="${row.mst00004CustomerInvoiceCD}">－</td>
-                                <td class="a-left" data-node="v:Customers.MST00004_CustomerKbn" th:text="${row.mst00004CustomerKbn?.label}">－</td>
-                                <td class="a-left" data-node="v:Customers.MST00004_CustomerNM" th:text="${row.mst00004CustomerNM}">－</td>
-                                <td class="a-left" data-node="v:Customers.MST00004_CustomerOmission" th:text="${row.mst00004CustomerOmission}">－</td>
-                                <td class="a-left" data-node="v:Customers.MST00004_AreaCD" th:text="${row.mst00004AreaCD}">－</td>
-                                <td class="a-left" data-node="v:Customers.MST00004_Address1" th:text="${row.mst00004Address1}">－</td>
-                                <td class="a-left" data-node="v:Customers.MST00004_Address2" th:text="${row.mst00004Address2}">－</td>
-                                <td class="a-left" data-node="v:Customers.MST00004_Address3" th:text="${row.mst00004Address3}">－</td>
-                                <td class="cell-panel a-center" data-node="n:btnPanel1">
-                                    <button type="submit" name="_event" th:value="|Customers_btnDetail_Click:${st.count}|" data-node="n:btnDetail" class="btn btn-sm btn-view" formnovalidate="formnovalidate">詳細</button>
-                                    <button type="submit" name="_event" th:value="|Customers_btnEdit_Click:${st.count}|" data-node="n:btnEdit" class="btn btn-sm btn-edit" formnovalidate="formnovalidate">編集</button>
-                                    <button type="submit" name="_event" th:value="|Customers_btnCopy_Click:${st.count}|" data-node="n:btnCopy" class="btn btn-sm btn-copy" formnovalidate="formnovalidate">複製</button>
-                                    <button type="submit" name="_event" th:value="|Customers_btnDelete_Click:${st.count}|" data-node="n:btnDelete" class="btn btn-sm btn-del" data-confirm="削除してもよろしいですか？" formnovalidate="formnovalidate">削除</button>
-                                </td>
+                            <tr th:each="row, st : *{Customers}" th:attr="data-row=${st.count}" class="hover:bg-blue-50" th:classappend="${(st.index &gt;= 10 ? 'hidden' : (st.even ? 'bg-slate-50' : ''))}">
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-center w-12 text-slate-400 seq" data-node="n:SEQ" th:text="${st.count}">1</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Customers.MST00004_CustomerCD" th:text="${row.mst00004CustomerCD}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Customers.MST00004_CustomerInvoiceCD" th:text="${row.mst00004CustomerInvoiceCD}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Customers.MST00004_CustomerKbn" th:text="${row.mst00004CustomerKbn?.label}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Customers.MST00004_CustomerNM" th:text="${row.mst00004CustomerNM}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Customers.MST00004_CustomerOmission" th:text="${row.mst00004CustomerOmission}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Customers.MST00004_AreaCD" th:text="${row.mst00004AreaCD}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Customers.MST00004_Address1" th:text="${row.mst00004Address1}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Customers.MST00004_Address2" th:text="${row.mst00004Address2}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-left" data-node="v:Customers.MST00004_Address3" th:text="${row.mst00004Address3}">－</td>
+                                <td class="border-b border-slate-100 px-3 py-2.5 align-middle text-center" data-node="n:btnPanel1"><div class="flex flex-wrap justify-center gap-1">
+                                    <button type="submit" name="_event" th:value="|Customers_btnDetail_Click:${st.count}|" data-node="n:btnDetail" class="inline-flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100" formnovalidate="formnovalidate">詳細</button>
+                                    <button type="submit" name="_event" th:value="|Customers_btnEdit_Click:${st.count}|" data-node="n:btnEdit" class="inline-flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-blue-600 text-white hover:bg-blue-700" formnovalidate="formnovalidate">編集</button>
+                                    <button type="submit" name="_event" th:value="|Customers_btnCopy_Click:${st.count}|" data-node="n:btnCopy" class="inline-flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-amber-500 text-white hover:bg-amber-600" formnovalidate="formnovalidate">複製</button>
+                                    <button type="submit" name="_event" th:value="|Customers_btnDelete_Click:${st.count}|" data-node="n:btnDelete" class="inline-flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 disabled:opacity-60 bg-red-600 text-white hover:bg-red-700" data-confirm="削除してもよろしいですか？" formnovalidate="formnovalidate">削除</button>
+                                </div></td>
                             </tr>
+                            <th:block th:if="${#lists.isEmpty(form.Customers)}">
+                                <tr th:replace="~{parts/field :: emptyRow(11, '取引先がありません', '検索条件を変更して、もう一度検索してください。')}"></tr>
+                            </th:block>
                         </tbody>
                     </table>
                 </div>
@@ -168,10 +134,9 @@
     </form>
 
     <!--/* ポップアップの画面（Popup の画面を Call で開いたとき）：Close で閉じる */-->
-    <div class="popup-overlay" th:if="${popup}"
-         style="position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4)">
-        <iframe class="popup-frame" th:src="@{${popup.url}}" th:title="${popup.screenId}"
-                th:style="|width: min(95vw, ${popup.width}); height: min(90vh, ${popup.height}); border: 0; border-radius: 6px; background: #fff; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)|"></iframe>
+    <div class="popup-overlay fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" th:if="${popup}">
+        <iframe class="popup-frame max-h-[90vh] w-full max-w-[95vw] rounded-xl border-0 bg-white shadow-2xl" th:src="@{${popup.url}}" th:title="${popup.screenId}"
+                th:style="|width: min(95vw, ${popup.width}); height: min(90vh, ${popup.height})|"></iframe>
     </div>
 
     <!--/* 画面の部分更新（自動生成）：送信を fetch で送り、返ってきた画面で main の中身を入れ替える（ちらつかない） */-->
@@ -387,7 +352,7 @@
             const max = Number(input.dataset.maxSize) * 1024 * 1024;
             if ([...input.files].some(f => f.size > max)) { window.alert(`ファイルは ${input.dataset.maxSize} MB までです。`); input.value = ''; }
           }));
-          // ポップアップ画面の 🔍 のボタン（.btn-popup）・和暦の 📅 のボタン（.wareki-picker）：入力欄の中にアイコン（BaseStylesheet の ico-search・ico-date）がある場合はボタンを隠し、
+          // ポップアップ画面の 🔍 のボタン（.btn-popup）・和暦の 📅 のボタン（.wareki-picker）：入力欄の中にアイコン（Tailwind の ico-search・ico-date）がある場合はボタンを隠し、
           // アイコン（入力欄の右端）のクリックでボタンを押す（🔍 は送信して Event 項目.Popup、📅 はカレンダー）。アイコンの上はマウスの形を指にする
           root.querySelectorAll('.btn-popup, .wareki-picker').forEach(button => {
             const input = button.parentElement && button.parentElement.querySelector(button.classList.contains('btn-popup') ? 'input.ico-search' : 'input.ico-date[data-wareki-text]');
@@ -400,7 +365,7 @@
             input.addEventListener('mousemove', e => input.style.cursor = onIcon(e) && !button.disabled ? 'pointer' : '');
             input.addEventListener('click', e => { if (onIcon(e) && !button.disabled) button.click(); });
           });
-          // 一覧（BaseStylesheet の table.data）：縞模様（表示中の行に 1 行おきに alt）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
+          // 一覧（Tailwind の table.data）：縞模様（表示中の行に 1 行おきに bg-slate-50）、ページの切り替え（data-page-size。div.pager：件数・表示件数・ページ番号）、
           // 並べ替え（th.sortable。sort-asc / sort-desc）、列の幅の変更（.col-resizer）、表示中の行をまとめて選ぶ（data-check-all）
           root.querySelectorAll('table[data-grid]').forEach(table => {
             const body = table.tBodies[0];
@@ -415,18 +380,22 @@
             const showSize = showPages && table.dataset.pagerPageSize !== 'false';
             let page = 0;
             let pager = null;
-            const stripe = () => rows().filter(r => r.style.display !== 'none').forEach((r, i) => r.classList.toggle('alt', i % 2 === 1));
+            const stripe = () => rows().filter(r => r.style.display !== 'none').forEach((r, i) => r.classList.toggle('bg-slate-50', i % 2 === 1));
             const link = (text, to, css) => {
               const a = document.createElement('a');
-              a.className = 'pg' + (css ? ' ' + css : '');
+              a.className = 'pg ' + (css ? css + ' ' : '')
+                + (css === 'active' ? 'inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-blue-600 bg-blue-600 px-2 text-sm font-semibold text-white'
+                  : css === 'disabled' ? 'pointer-events-none inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-2 text-sm text-slate-300'
+                  : css === 'dots' ? 'inline-flex h-8 min-w-8 cursor-default items-center justify-center px-2 text-sm text-slate-400'
+                  : 'inline-flex h-8 min-w-8 items-center justify-center rounded-md border border-slate-300 bg-white px-2 text-sm text-slate-700 transition hover:border-blue-500 hover:text-blue-600');
               a.textContent = text;
               a.dataset.page = to;
               return a;
             };
             const show = () => {
               const all = rows();
-              // 最初のページ以外の行（サーバーで隠した行 pg-off）は、ここで表示・非表示を決める
-              all.forEach(r => r.classList.remove('pg-off'));
+              // 最初のページ以外の行（サーバーで隠した行 hidden）は、ここで表示・非表示を決める
+              all.forEach(r => r.classList.remove('hidden'));
               // SEQ（td.seq）：並べ替えた後も上から 1, 2, …（data-row の行番号は変えない）
               all.forEach((r, i) => { const seq = r.querySelector('td.seq'); if (seq) seq.textContent = i + 1; });
               if (pager && showTotal) pager.querySelector('.total span').textContent = all.length;
@@ -452,12 +421,12 @@
             };
             if (showTotal || size) {
               pager = document.createElement('div');
-              pager.className = 'pager';
+              pager.className = 'pager flex flex-wrap items-center justify-end gap-1.5 px-3 py-3';
               // 件数がない場合も、表示件数の選択・ページ番号は右に寄せる（.total の margin-right: auto の代わり）
-              pager.innerHTML = showTotal ? '<span class="total">件数：<span></span></span>' : '<span class="total"></span>';
+              pager.innerHTML = showTotal ? '<span class="total mr-auto text-sm text-slate-600">件数：<span></span></span>' : '<span class="total mr-auto"></span>';
               if (showSize) {
                 if (!sizes.includes(size)) sizes.unshift(size);
-                pager.insertAdjacentHTML('beforeend', '<select class="ctl sel page-size">'
+                pager.insertAdjacentHTML('beforeend', '<select class="page-size mr-2 h-8 w-32 rounded-md border border-slate-300 bg-white px-2 text-sm text-slate-700">'
                   + sizes.map(s => '<option value="' + s + '"' + (s === size ? ' selected' : '') + '>' + s + '件/ページ</option>').join('') + '</select>');
                 pager.querySelector('select').addEventListener('change', e => { size = Number(e.target.value); page = 0; show(); });
               }
@@ -478,8 +447,12 @@
                   // 幅を変えた直後のクリック・取っ手のクリックは並べ替えない
                   if (e.target.closest('.col-resizer') || table.dataset.resized) return;
                   const asc = !th.classList.contains('sort-asc');
-                  heads.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+                  heads.forEach(h => {
+                    h.classList.remove('sort-asc', 'sort-desc');
+                    h.querySelector('.sort-indicator')?.remove();
+                  });
                   th.classList.add(asc ? 'sort-asc' : 'sort-desc');
+                  th.insertAdjacentHTML('beforeend', '<span class="sort-indicator ml-1 text-[10px] text-blue-600" aria-hidden="true">' + (asc ? '▲' : '▼') + '</span>');
                   const sorted = rows().sort((a, b) => {
                     const x = a.cells[index].textContent.trim(), y = b.cells[index].textContent.trim();
                     const nx = Number(x.replace(/,/g, '')), ny = Number(y.replace(/,/g, ''));
@@ -535,6 +508,7 @@
           // 件数（折りたたんだときの 1 行）。Error があるときは開く
           function refresh(view) {
             const items = [...view.querySelectorAll('.message-item')];
+            view.classList.toggle('hidden', items.length === 0);
             const summary = view.querySelector('.message-summary');
             if (summary) summary.textContent = LEVELS.map(l => [l, items.filter(li => levelOf(li) === l).length]).filter(x => x[1] > 0).map(x => NAMES[x[0]] + ' ' + x[1] + ' 件').join('・');
             if (view.tagName === 'DETAILS' && items.some(li => levelOf(li) === 'Error')) view.open = true;
@@ -549,7 +523,12 @@
             const view = views().find(v => accepts(v, level));
             if (!view) return false;
             const li = document.createElement('li');
-            li.className = 'message-item message-' + level.toLowerCase();
+            li.className = 'message-item message-' + level.toLowerCase() + ' flex items-start gap-2 py-0.5 text-sm '
+              + (level === 'Error' ? 'text-red-600' : level === 'Warning' ? 'text-amber-600' : 'text-blue-600');
+            const icon = document.createElement('span');
+            icon.className = 'shrink-0';
+            icon.textContent = level === 'Error' ? '✖' : level === 'Warning' ? '⚠' : 'ℹ';
+            li.appendChild(icon);
             if (item) li.dataset.item = item;
             const span = document.createElement('span');
             span.className = 'message-text';
@@ -558,7 +537,7 @@
             const list = view.querySelector('.message-list');
             const next = [...list.children].find(c => LEVELS.indexOf(levelOf(c)) > LEVELS.indexOf(level));
             list.insertBefore(li, next || null);
-            view.classList.remove('message-closed');
+            view.classList.remove('hidden');
             refresh(view);
             autoHide(view, li);
             return true;
@@ -578,7 +557,7 @@
             // × で閉じる（次のメッセージで再び表示する）
             const close = e.target.closest('.message-close');
             if (close) {
-              close.closest('.message-view').classList.add('message-closed');
+              close.closest('.message-view').classList.add('hidden');
               return;
             }
             // 項目付きのメッセージ：その入力欄へ移動する

@@ -1,282 +1,128 @@
 <!DOCTYPE html>
-<!--/* 入力部品ライブラリ（想定プロジェクトの既存資産）
-       生成された各画面テンプレートは、ここに定義された th:fragment を
-       th:replace で組み込むことで「部品形式」の画面を構成する。 */-->
+<!--/* 共通 UI 部品（Tailwind CSS）: 画面の入力項目・見出しなどを 1 か所にまとめる。
+       画面は th:replace="~{parts/field :: fieldText(...)}" の形で使う。 */-->
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<!-- テキスト入力部品 -->
-<div th:fragment="text(label, field)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <input type="text" th:id="${field}" th:field="*{__${field}__}"/>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
+<!--/* ===== 入力項目（1 行：ラベル 9rem + 入力欄） =====
+       引数：node（data-node）・label・field（th:field の名前）・required・maxlength・readonly・hidden
+       エラーは入力欄の下（2 列目）に表示する。 */-->
+<div th:fragment="fieldText(node, label, field, required, maxlength, readonly, hidden)"
+     th:attr="data-node=${node}"
+     th:classappend="${hidden} ? 'hidden' : ''"
+     class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
+    <div class="contents">
+        <div class="flex min-h-9 items-center justify-end gap-1">
+            <label class="text-sm font-medium text-slate-700" th:for="${field}" th:text="${label}">ラベル</label>
+            <span th:if="${required}" class="text-red-500" aria-hidden="true">*</span>
+        </div>
+        <div class="flex min-w-0 max-w-sm items-center gap-2">
+            <input type="text" th:field="*{__${field}__}" th:readonly="${readonly}" th:maxlength="${maxlength}"
+                   autocomplete="off"
+                   class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400"/>
+        </div>
+    </div>
+    <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
 </div>
 
-<!-- テキスト入力部品（readOnly：読み取り専用、rightText：右側の文字。th:field は type 属性で処理が決まるため、type は固定で書く） -->
-<div th:fragment="ctlText(label, field, readOnly, rightText)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="text" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
+<!--/* プルダウン：items は value→表示名の Map。blank=true で先頭に空の選択肢を出す。 */-->
+<div th:fragment="fieldSelect(node, label, field, items, required, blank, hidden)"
+     th:attr="data-node=${node}"
+     th:classappend="${hidden} ? 'hidden' : ''"
+     class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
+    <div class="contents">
+        <div class="flex min-h-9 items-center justify-end gap-1">
+            <label class="text-sm font-medium text-slate-700" th:for="${field}" th:text="${label}">ラベル</label>
+            <span th:if="${required}" class="text-red-500" aria-hidden="true">*</span>
+        </div>
+        <div class="flex min-w-0 max-w-sm items-center gap-2">
+            <select th:field="*{__${field}__}"
+                    class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 pr-8 text-sm text-slate-800 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-400">
+                <option th:if="${blank}" value=""></option>
+                <option th:each="item : ${items}" th:value="${item.key}" th:text="${item.value}">項目</option>
+            </select>
+        </div>
+    </div>
+    <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
 </div>
 
-<!-- 数値入力部品（readOnly：読み取り専用、rightText：右側の文字。th:field は type 属性で処理が決まるため、type は固定で書く） -->
-<div th:fragment="ctlNumber(label, field, readOnly, rightText)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="number" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
+<!--/* 日付（type=date） */-->
+<div th:fragment="fieldDate(node, label, field, required, readonly, hidden)"
+     th:attr="data-node=${node}"
+     th:classappend="${hidden} ? 'hidden' : ''"
+     class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
+    <div class="contents">
+        <div class="flex min-h-9 items-center justify-end gap-1">
+            <label class="text-sm font-medium text-slate-700" th:for="${field}" th:text="${label}">ラベル</label>
+            <span th:if="${required}" class="text-red-500" aria-hidden="true">*</span>
+        </div>
+        <div class="flex min-w-0 max-w-sm items-center gap-2">
+            <input type="date" th:field="*{__${field}__}" th:readonly="${readonly}"
+                   class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400"/>
+        </div>
+    </div>
+    <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
 </div>
 
-<!-- 日付入力部品（readOnly：読み取り専用、rightText：右側の文字。th:field は type 属性で処理が決まるため、type は固定で書く） -->
-<div th:fragment="ctlDate(label, field, readOnly, rightText)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="date" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
+<!--/* 日時（type=datetime-local） */-->
+<div th:fragment="fieldDateTime(node, label, field, required, readonly, hidden)"
+     th:attr="data-node=${node}"
+     th:classappend="${hidden} ? 'hidden' : ''"
+     class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
+    <div class="contents">
+        <div class="flex min-h-9 items-center justify-end gap-1">
+            <label class="text-sm font-medium text-slate-700" th:for="${field}" th:text="${label}">ラベル</label>
+            <span th:if="${required}" class="text-red-500" aria-hidden="true">*</span>
+        </div>
+        <div class="flex min-w-0 max-w-sm items-center gap-2">
+            <input type="datetime-local" th:field="*{__${field}__}" th:readonly="${readonly}"
+                   class="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400"/>
+        </div>
+    </div>
+    <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
 </div>
 
-<!-- 日時入力部品（readOnly：読み取り専用、rightText：右側の文字。th:field は type 属性で処理が決まるため、type は固定で書く） -->
-<div th:fragment="ctlDateTime(label, field, readOnly, rightText)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="datetime-local" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
+<!--/* 複数行テキスト */-->
+<div th:fragment="fieldTextarea(node, label, field, required, rows, readonly, hidden)"
+     th:attr="data-node=${node}"
+     th:classappend="${hidden} ? 'hidden' : ''"
+     class="mb-4 grid grid-cols-[9rem_minmax(0,1fr)] items-start gap-x-3 gap-y-1">
+    <div class="contents">
+        <div class="flex min-h-9 items-center justify-end gap-1">
+            <label class="text-sm font-medium text-slate-700" th:for="${field}" th:text="${label}">ラベル</label>
+            <span th:if="${required}" class="text-red-500" aria-hidden="true">*</span>
+        </div>
+        <div class="flex min-w-0 max-w-sm items-center gap-2">
+            <textarea th:field="*{__${field}__}" th:readonly="${readonly}" th:rows="${rows}"
+                      class="min-h-24 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 readonly:bg-slate-50 readonly:text-slate-500 disabled:bg-slate-50 disabled:text-slate-400"></textarea>
+        </div>
+    </div>
+    <span class="col-start-2 text-xs text-red-600" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
 </div>
 
-<!-- パスワード入力部品（readOnly：読み取り専用、rightText：右側の文字。th:field は type 属性で処理が決まるため、type は固定で書く） -->
-<div th:fragment="ctlPassword(label, field, readOnly, rightText)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="password" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
+
+<!--/* ===== ページ見出し（タイトル・説明）。操作ボタンは画面側で横に並べる ===== */-->
+<div th:fragment="pageHeader(title, description)">
+    <h1 class="text-2xl font-bold tracking-tight text-slate-900" th:text="${title}">タイトル</h1>
+    <p th:if="${description}" class="mt-1 text-sm text-slate-500" th:text="${description}"></p>
 </div>
 
-<!-- メールアドレス入力部品（readOnly：読み取り専用、rightText：右側の文字。th:field は type 属性で処理が決まるため、type は固定で書く） -->
-<div th:fragment="ctlEmail(label, field, readOnly, rightText)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="email" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- ファイルのアップロード部品（フォームは multipart/form-data。サーバーはコードの &file.Upload("項目名", フォルダー) で保存する） -->
-<div th:fragment="upload(label, field)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <input type="file" th:id="${field}" th:name="|_file_${field}|"/>
-</div>
-
-<!-- メールアドレス入力部品 -->
-<div th:fragment="email(label, field)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <input type="email" th:id="${field}" th:field="*{__${field}__}"/>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- パスワード入力部品 -->
-<div th:fragment="password(label, field)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <input type="password" th:id="${field}" th:field="*{__${field}__}"/>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- 数値入力部品 -->
-<div th:fragment="number(label, field)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <input type="number" th:id="${field}" th:field="*{__${field}__}"/>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- 日付入力部品 -->
-<div th:fragment="date(label, field)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <input type="date" th:id="${field}" th:field="*{__${field}__}"/>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- 複数行テキスト（テキストエリア）部品 -->
-<div th:fragment="textarea(label, field)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <textarea th:id="${field}" th:field="*{__${field}__}" rows="4"></textarea>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- プルダウン選択部品（部品の種類 ComboBox。items は value→表示名の Map） -->
-<div th:fragment="select(label, field, items)" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <select th:id="${field}" th:field="*{__${field}__}">
-        <option value="">選択してください</option>
-        <option th:each="item : ${items}" th:value="${item.key}" th:text="${item.value}">項目</option>
-    </select>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- チェックボックス部品（Boolean の項目のみ。以前の画面用。新しい画面は ctlCheckbox を使う） -->
-<div th:fragment="checkbox(label, field)" class="form-row">
-    <label>
-        <input type="checkbox" th:field="*{__${field}__}"/>
-        <span th:text="${label}">ラベル</span>
-    </label>
-</div>
-
-<!-- チェックボックス部品（値は true。Boolean 以外（String など）の項目にも使えるように value を書く：チェックすると "true"） -->
-<div th:fragment="ctlCheckbox(label, field)" class="form-row">
-    <label>
-        <input type="checkbox" value="true" th:field="*{__${field}__}"/>
-        <span th:text="${label}">ラベル</span>
-    </label>
-</div>
-
-<!-- ラジオ ボタン部品（items は value→表示名の Map。選択肢から 1 つ選ぶ） -->
-<div th:fragment="ctlRadio(label, field, items)" class="form-row">
-    <label th:text="${label}">ラベル</label>
-    <span class="radios">
-        <label th:each="item : ${items}" class="radio">
-            <input type="radio" th:field="*{__${field}__}" th:value="${item.key}"/>
-            <span th:text="${item.value}">項目</span>
-        </label>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!--/* ===== 入力部品（画面項目のプロパティ対応）=====
-       引数は名前付きで渡す（例：inputText(label='名前', field='userName', placeholder='山田 太郎')）。渡さない引数は null になり、その属性は出力しない。
-       共通：label・field・readOnly・disabled・tooltip（title 属性）・tabindex・autofocus・cssStyle（幅・文字の位置など）
-       入力欄：rightText・placeholder・inputmode・autocomplete・pattern・min・max・step・maxlength
-       複数行：rows　選択：items・blank（先頭の空の選択肢の表示）・noBlank（空の選択肢なし）・radioStyle（並べ方）　アップロード：accept・maxsize（MB） */-->
-
-<!-- テキスト入力部品 -->
-<div th:fragment="inputText" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="text" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}" th:disabled="${disabled}" th:placeholder="${placeholder}"
-               th:title="${tooltip}" th:tabindex="${tabindex}" th:autofocus="${autofocus}" th:style="${cssStyle}" th:inputmode="${inputmode}"
-               th:autocomplete="${autocomplete}" th:pattern="${pattern}" th:maxlength="${maxlength}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- パスワード入力部品 -->
-<div th:fragment="inputPassword" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="password" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}" th:disabled="${disabled}" th:placeholder="${placeholder}"
-               th:title="${tooltip}" th:tabindex="${tabindex}" th:autofocus="${autofocus}" th:style="${cssStyle}" th:autocomplete="${autocomplete}"
-               th:pattern="${pattern}" th:maxlength="${maxlength}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- メールアドレス入力部品 -->
-<div th:fragment="inputEmail" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="email" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}" th:disabled="${disabled}" th:placeholder="${placeholder}"
-               th:title="${tooltip}" th:tabindex="${tabindex}" th:autofocus="${autofocus}" th:style="${cssStyle}" th:autocomplete="${autocomplete}"
-               th:pattern="${pattern}" th:maxlength="${maxlength}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- 数値入力部品 -->
-<div th:fragment="inputNumber" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="number" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}" th:disabled="${disabled}" th:placeholder="${placeholder}"
-               th:title="${tooltip}" th:tabindex="${tabindex}" th:autofocus="${autofocus}" th:style="${cssStyle}" th:inputmode="${inputmode}"
-               th:min="${min}" th:max="${max}" th:step="${step}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- 日付入力部品 -->
-<div th:fragment="inputDate" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="date" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}" th:disabled="${disabled}"
-               th:title="${tooltip}" th:tabindex="${tabindex}" th:autofocus="${autofocus}" th:style="${cssStyle}" th:min="${min}" th:max="${max}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- 日時入力部品 -->
-<div th:fragment="inputDateTime" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <span class="control">
-        <input type="datetime-local" th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}" th:disabled="${disabled}"
-               th:title="${tooltip}" th:tabindex="${tabindex}" th:autofocus="${autofocus}" th:style="${cssStyle}" th:min="${min}" th:max="${max}"/>
-        <span class="right-text" th:text="${rightText}"></span>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- 複数行テキスト部品 -->
-<div th:fragment="inputTextarea" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <textarea th:id="${field}" th:field="*{__${field}__}" th:readonly="${readOnly}" th:disabled="${disabled}" th:placeholder="${placeholder}"
-              th:title="${tooltip}" th:tabindex="${tabindex}" th:autofocus="${autofocus}" th:style="${cssStyle}" th:rows="${rows}" th:maxlength="${maxlength}"></textarea>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- プルダウン選択部品（items は value→表示名の Map） -->
-<div th:fragment="inputSelect" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <select th:id="${field}" th:field="*{__${field}__}" th:disabled="${disabled}" th:title="${tooltip}" th:tabindex="${tabindex}"
-            th:autofocus="${autofocus}" th:style="${cssStyle}">
-        <option value="" th:unless="${noBlank}" th:text="${blank}">選択してください</option>
-        <option th:each="item : ${items}" th:value="${item.key}" th:text="${item.value}">項目</option>
-    </select>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- ラジオ ボタン部品（items は value→表示名の Map。radioStyle：並べ方） -->
-<div th:fragment="inputRadio" class="form-row">
-    <label th:text="${label}">ラベル</label>
-    <span class="radios" th:style="${radioStyle}">
-        <label th:each="item : ${items}" class="radio">
-            <input type="radio" th:field="*{__${field}__}" th:value="${item.key}" th:disabled="${disabled}" th:title="${tooltip}" th:tabindex="${tabindex}"/>
-            <span th:text="${item.value}">項目</span>
-        </label>
-    </span>
-    <span class="error" th:if="${#fields.hasErrors('__${field}__')}" th:errors="*{__${field}__}"></span>
-</div>
-
-<!-- チェック ボックス部品（値は true） -->
-<div th:fragment="inputCheckbox" class="form-row">
-    <label>
-        <input type="checkbox" value="true" th:field="*{__${field}__}" th:disabled="${disabled}" th:title="${tooltip}" th:tabindex="${tabindex}" th:autofocus="${autofocus}"/>
-        <span th:text="${label}">ラベル</span>
-    </label>
-</div>
-
-<!-- ファイルのアップロード部品（accept：選べるファイル、maxsize：最大サイズ（MB。画面の補助スクリプトが確認する）） -->
-<div th:fragment="inputUpload" class="form-row">
-    <label th:for="${field}" th:text="${label}">ラベル</label>
-    <input type="file" th:id="${field}" th:name="|_file_${field}|" th:accept="${accept}" th:data-max-size="${maxsize}" th:disabled="${disabled}"
-           th:title="${tooltip}" th:tabindex="${tabindex}"/>
-</div>
-
-<!-- 送信ボタン部品 -->
-<div th:fragment="submit(label)" class="form-actions">
-    <button type="submit" th:text="${label}">送信</button>
-</div>
+<!--/* ===== 一覧が空のときの行（tbody の中に置く） ===== */-->
+<tr th:fragment="emptyRow(colspan, title, description)" class="empty">
+    <td th:colspan="${colspan}" class="px-6 py-16 text-center">
+        <div class="mx-auto flex max-w-sm flex-col items-center gap-3">
+            <span class="grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-slate-400" aria-hidden="true">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                    <circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>
+                </svg>
+            </span>
+            <div>
+                <p class="text-sm font-semibold text-slate-700" th:text="${title}">データがありません</p>
+                <p class="mt-1 text-xs text-slate-400" th:text="${description}">条件を変更して、もう一度検索してください。</p>
+            </div>
+        </div>
+    </td>
+</tr>
 
 </body>
 </html>

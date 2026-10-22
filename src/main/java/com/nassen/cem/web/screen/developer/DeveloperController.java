@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class DeveloperController {
 
     /** 画面テンプレート（Thymeleaf）のビュー名。 */
-    private static final String VIEW = "screen/Developer";
+    private static final String VIEW = "screen/developer";
 
     /** 画面 ID（画面の遷移・フォームの保持に使う）。 */
     private static final String SCREEN = "Developer";

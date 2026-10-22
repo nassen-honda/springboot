@@ -40,7 +40,7 @@ public class OptimisticLock {
         if (ScriptDebug.on && ScriptDebug.stop("OptimisticLock", 9)) ScriptDebug.pause(new String[] { }, new Object[] { }, debugVariables_());
         this.poMessage = "";
         if (ScriptDebug.on && ScriptDebug.stop("OptimisticLock", 12)) ScriptDebug.pause(new String[] { }, new Object[] { }, debugVariables_());
-        ScriptDb.optimisticCheck(this.piOptimistic);
+        ScriptDb.optimisticCheck(this.piOptimistic, false);
         if (ScriptDebug.on && ScriptDebug.stop("OptimisticLock", 14)) ScriptDebug.pause(new String[] { }, new Object[] { }, debugVariables_());
         if (ScriptLib.isEmpty(this.piOptimistic.getCurrentDate())) {
             if (ScriptDebug.on && ScriptDebug.stop("OptimisticLock", 15)) ScriptDebug.pause(new String[] { }, new Object[] { }, debugVariables_());

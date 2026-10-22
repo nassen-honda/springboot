@@ -7,27 +7,36 @@
 */-->
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>エラー</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%232563eb'/%3E%3C/svg%3E">
+    <link rel="stylesheet" th:href="@{/css/BaseStylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/Stylesheet.css}">
 </head>
-<body>
-<main class="screen" style="max-width: 640px; margin: 40px auto;">
-    <h1>処理できませんでした</h1>
-    <p th:text="${errorDescription} ?: (${status} == 404 ? '指定したページはありません。' : 'エラーが起きました。しばらくしてからもう一度操作してください。')">エラーが起きました。</p>
-    <p th:if="${message}" th:text="${message}" style="white-space: pre-line;"></p>
-    <dl style="color: #666; font-size: 90%;">
-        <dt>種類</dt>
-        <dd th:text="${errorCode} ?: (${error} ?: ${status})">その他のエラー</dd>
-        <th:block th:if="${errorScreen}">
-            <dt>画面・イベント</dt>
-            <dd th:text="${errorScreen} + (${errorEvent} != null and ${errorEvent} != '' ? '（' + ${errorEvent} + '）' : '')"></dd>
-        </th:block>
-        <th:block th:if="${errorTime}">
-            <dt>日時</dt>
-            <dd th:text="${#temporals.format(errorTime, 'yyyy/MM/dd HH:mm:ss')}"></dd>
-        </th:block>
-    </dl>
-    <p><a th:href="@{/}">トップへ戻る</a></p>
+<body class="min-h-screen bg-slate-100 text-slate-800">
+<main class="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-6 py-16">
+    <div class="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div class="mb-4 flex items-center gap-3">
+            <span class="grid h-10 w-10 place-items-center rounded-full bg-red-50 text-lg text-red-600">!</span>
+            <h1 class="text-xl font-bold text-slate-900">処理できませんでした</h1>
+        </div>
+        <p class="text-sm leading-6 text-slate-600" th:text="${errorDescription} ?: (${status} == 404 ? '指定したページはありません。' : 'エラーが起きました。しばらくしてからもう一度操作してください。')">エラーが起きました。</p>
+        <p th:if="${message}" th:text="${message}" class="mt-2 whitespace-pre-line text-sm text-red-600"></p>
+        <dl class="mt-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 rounded-lg bg-slate-50 px-4 py-3 text-sm">
+            <dt class="text-slate-500">種類</dt>
+            <dd class="text-slate-800" th:text="${errorCode} ?: (${error} ?: ${status})">その他のエラー</dd>
+            <th:block th:if="${errorScreen}">
+                <dt class="text-slate-500">画面・イベント</dt>
+                <dd class="text-slate-800" th:text="${errorScreen} + (${errorEvent} != null and ${errorEvent} != '' ? '（' + ${errorEvent} + '）' : '')"></dd>
+            </th:block>
+            <th:block th:if="${errorTime}">
+                <dt class="text-slate-500">日時</dt>
+                <dd class="text-slate-800" th:text="${#temporals.format(errorTime, 'yyyy/MM/dd HH:mm:ss')}"></dd>
+            </th:block>
+        </dl>
+        <a th:href="@{/}" class="mt-6 inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700">トップへ戻る</a>
+    </div>
 </main>
 </body>
 </html>
